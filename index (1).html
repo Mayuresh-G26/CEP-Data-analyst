@@ -1,0 +1,1868 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+<meta charset='UTF-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1.0'>
+<title>Digital Literacy Survey Analysis Report — Nilgaon</title>
+<link rel='preconnect' href='https://fonts.googleapis.com'>
+<link href='https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=IBM+Plex+Sans:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap' rel='stylesheet'>
+<script src='https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4'></script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js'></script>
+<script>document.documentElement.classList.add('js');</script>
+<style>
+  :root{
+    --paper:#f5f2ea;
+    --paper-raised:#ffffff;
+    --ink:#232019;
+    --ink-soft:#5c574c;
+    --teal:#1f3d3a;
+    --teal-deep:#142826;
+    --ochre:#c1872b;
+    --ochre-soft:#e9d3ac;
+    --rule:#d8d1bf;
+    --good:#3f6b4f;
+    --warn:#a8452f;
+    --radius:2px;
+    --nav-height:56px;
+  }
+  body.dark{
+    --paper:#181915;
+    --paper-raised:#1f1f1b;
+    --ink:#efeadd;
+    --ink-soft:#b8b09e;
+    --teal:#7fb3ad;
+    --teal-deep:#4a7a74;
+    --ochre:#e0ac54;
+    --ochre-soft:#f5dfb8;
+    --rule:#3b3830;
+    --good:#6dbf85;
+    --warn:#e07a65;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-padding-top: calc(var(--nav-height) + 1rem);}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'IBM Plex Sans', sans-serif;
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+    transition:background 0.3s ease,color 0.3s ease;
+  }
+  h1,h2,h3,.serif{font-family:'Source Serif 4', serif;}
+  body.lang-mr, body.lang-hi{ font-family: 'Noto Sans Devanagari', 'IBM Plex Sans', sans-serif; }
+  body.lang-mr h1, body.lang-mr h2, body.lang-mr h3, body.lang-mr .serif,
+  body.lang-hi h1, body.lang-hi h2, body.lang-hi h3, body.lang-hi .serif{ font-family: 'Noto Sans Devanagari', 'Source Serif 4', serif; }
+
+  .wrap{max-width:960px;margin:0 auto;padding:0 1.5rem;}
+
+  /* Scroll progress */
+  #scroll-progress{
+    position:fixed; top:0; left:0; height:4px; background:var(--ochre); width:0%; z-index:10001; transition:width 0.1s linear;
+  }
+
+  /* Sticky nav */
+  #top-nav{
+    position:fixed; top:0; left:0; right:0; background:var(--paper-raised); border-bottom:1px solid var(--rule); z-index:10000;
+    box-shadow:0 1px 4px rgba(0,0,0,0.05);
+  }
+  #top-nav .nav-inner{max-width:960px;margin:0 auto;padding:0.6rem 1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;}
+  #top-nav .brand{font-family:'Source Serif 4',serif;font-weight:700;color:var(--teal);font-size:1.1rem;text-decoration:none;}
+  #top-nav ul{list-style:none;margin:0;padding:0;display:flex;align-items:center;gap:1.2rem;}
+  #top-nav a{color:var(--ink-soft);text-decoration:none;font-size:0.85rem;font-weight:600;}
+  #top-nav a:hover,#top-nav a:focus{color:var(--teal);text-decoration:underline;}
+  #top-nav .nav-actions{display:flex;align-items:center;gap:0.5rem;}
+  #nav-toggle{display:none;background:none;border:1px solid var(--rule);padding:0.35rem 0.6rem;border-radius:var(--radius);cursor:pointer;color:var(--ink);}
+  .icon-menu{width:20px;height:20px;display:block;}
+  .lang-switch{display:flex;align-items:center;gap:0.3rem;}
+  .lang-switch .btn{padding:0.4rem 0.6rem;font-size:0.78rem;min-width:2.5rem;justify-content:center;}
+  .lang-switch .btn[aria-pressed='true']{background:var(--teal);color:#f2efe6;border-color:var(--teal);}
+  @media (max-width:720px){
+    #nav-toggle{display:block;}
+    #top-nav ul{position:absolute;top:100%;left:0;right:0;background:var(--paper-raised);border-bottom:1px solid var(--rule);flex-direction:column;align-items:flex-start;padding:0.8rem 1.5rem;gap:0.6rem;display:none;}
+    #top-nav ul.open{display:flex;}
+    #top-nav .nav-actions{flex-wrap:wrap;justify-content:flex-end;}
+    .lang-switch{order:3;width:100%;justify-content:flex-start;margin-top:0.4rem;}
+  }
+
+  /* Buttons */
+  .btn{
+    display:inline-flex;align-items:center;gap:0.4rem;background:var(--teal);color:#f2efe6;border:1px solid var(--teal);padding:0.5rem 0.9rem;font-size:0.85rem;font-weight:600;border-radius:var(--radius);cursor:pointer;font-family:inherit;
+  }
+  .btn:hover,.btn:focus{background:var(--teal-deep);}
+  .btn.ghost{background:transparent;color:var(--teal);border-color:var(--teal);}
+  .btn.ghost:hover,.btn.ghost:focus{background:var(--teal);color:#f2efe6;}
+  .btn.secondary{background:var(--ochre);border-color:var(--ochre);color:#1f1f1b;}
+  .btn.secondary:hover,.btn.secondary:focus{background:#a86d22;border-color:#a86d22;color:#fff;}
+
+  /* Header / hero */
+  header.hero{
+    background:var(--teal);
+    color:#f2efe6;
+    padding:6rem 0 2.6rem;
+    border-bottom:6px solid var(--ochre);
+  }
+  .hero-top{
+    display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:1rem;margin-bottom:2.2rem;font-size:0.85rem;color:#c9d6cf;
+  }
+  .hero-top .field b{color:#f2efe6;font-weight:600;display:block;font-size:0.95rem;margin-top:0.15rem;}
+  h1.title{
+    font-size:clamp(2rem, 5vw, 3rem);font-weight:600;margin:0 0 0.6rem;line-height:1.12;max-width:18ch;
+  }
+  body.lang-mr h1.title, body.lang-hi h1.title{max-width:none;}
+  .hero-sub{font-size:1.05rem;color:#d7e0da;max-width:58ch;margin:0;}
+  .hero-stats{
+    display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:rgba(242,239,230,0.18);margin-top:2.4rem;border:1px solid rgba(242,239,230,0.18);
+  }
+  .hero-stat{
+    background:var(--teal);padding:1rem 1rem 1.1rem;display:flex;align-items:flex-start;gap:0.7rem;
+  }
+  .hero-stat .stat-icon{width:28px;height:28px;flex-shrink:0;color:var(--ochre-soft);}
+  .hero-stat .num{font-family:'Source Serif 4','Noto Sans Devanagari',serif;font-size:1.7rem;font-weight:700;color:var(--ochre-soft);line-height:1;}
+  .hero-stat .lbl{font-size:0.75rem;color:#c9d6cf;margin-top:0.4rem;}
+
+  /* Sections */
+  main{padding:3rem 0 1rem;}
+  section{margin-bottom:3.4rem;}
+  .section-head{
+    display:flex;align-items:baseline;gap:0.8rem;border-bottom:2px solid var(--ink);padding-bottom:0.5rem;margin-bottom:1.4rem;
+  }
+  .section-head h2{font-size:1.5rem;font-weight:600;margin:0;}
+  .section-head .tag{font-size:0.8rem;color:var(--ink-soft);}
+  p.lede{color:var(--ink-soft);max-width:68ch;font-size:0.98rem;}
+
+  /* Stat cards */
+  .stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-top:1.6rem;}
+  .stat-card{
+    background:var(--paper-raised);border:1px solid var(--rule);border-top:3px solid var(--teal);padding:1.1rem 1rem;display:flex;align-items:flex-start;gap:0.6rem;
+  }
+  .stat-card .stat-icon{width:24px;height:24px;flex-shrink:0;color:var(--teal);}
+  .stat-card .num{font-family:'Source Serif 4','Noto Sans Devanagari',serif;font-size:1.7rem;font-weight:700;color:var(--teal);line-height:1;}
+  .stat-card .lbl{font-size:0.8rem;color:var(--ink-soft);margin-top:0.3rem;}
+  .stat-card.flag{border-top-color:var(--warn);}
+  .stat-card.flag .num{color:var(--warn);}
+  .stat-card.flag .stat-icon{color:var(--warn);}
+
+  /* Panels and charts */
+  .panel{background:var(--paper-raised);border:1px solid var(--rule);padding:1.4rem 1.4rem 1rem;}
+  .panel + .panel{margin-top:1.2rem;}
+  .panel h3{margin:0 0 0.2rem;font-size:1.05rem;font-weight:600;}
+  .panel .cap{font-size:0.82rem;color:var(--ink-soft);margin-bottom:1rem;}
+  .chart-box{position:relative;width:100%;}
+  .chart-box.tall{height:340px;}
+  .chart-box.donut{height:240px;}
+
+  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;}
+
+  /* Gap list */
+  .gap-list{list-style:none;margin:0;padding:0;}
+  .gap-list li{
+    display:grid;grid-template-columns:1fr auto;gap:0.6rem;align-items:center;padding:0.7rem 0;border-bottom:1px solid var(--rule);
+  }
+  .gap-list li:last-child{border-bottom:none;}
+  .gap-list .q-label{font-size:0.92rem;}
+  .gap-list .q-label small{display:block;color:var(--ink-soft);font-size:0.78rem;margin-top:0.1rem;}
+  .bar-track{height:8px;background:#e7e2d3;width:100%;grid-column:1/-1;margin-top:0.5rem;}
+  body.dark .bar-track{background:#3b3830;}
+  .bar-fill{height:100%;background:var(--teal);}
+  .bar-fill.low{background:var(--warn);}
+  .pct{font-family:'Source Serif 4','Noto Sans Devanagari',serif;font-weight:700;font-size:1.1rem;min-width:3.4ch;text-align:right;}
+  .pct.low{color:var(--warn);}
+
+  /* Findings */
+  .findings-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1.4rem;}
+  .finding{
+    padding:1.1rem 1.2rem;background:var(--paper-raised);border:1px solid var(--rule);border-left:3px solid var(--teal);
+  }
+  .finding.risk{border-left-color:var(--warn);}
+  .finding h4{margin:0 0 0.35rem;font-size:0.98rem;font-weight:600;}
+  .finding p{margin:0;font-size:0.88rem;color:var(--ink-soft);}
+
+  .reco-list{margin:1.4rem 0 0;padding:0;list-style:none;counter-reset:reco;}
+  .reco-list li{
+    counter-increment:reco;display:grid;grid-template-columns:2rem 1fr;gap:0.8rem;padding:0.9rem 0;border-bottom:1px solid var(--rule);
+  }
+  .reco-list li:last-child{border-bottom:none;}
+  .reco-list li::before{
+    content:counter(reco);font-family:'Source Serif 4',serif;font-weight:700;color:var(--ochre);font-size:1.3rem;line-height:1;
+  }
+  .reco-list b{display:block;font-size:0.95rem;margin-bottom:0.15rem;}
+  .reco-list span{font-size:0.87rem;color:var(--ink-soft);}
+
+  /* Modal */
+  #detail-modal{position:fixed;inset:0;background:rgba(0,0,0,0.55);display:none;align-items:center;justify-content:center;z-index:11000;padding:1rem;}
+  #detail-modal.open{display:flex;}
+  .modal-content{background:var(--paper-raised);border:1px solid var(--rule);border-radius:var(--radius);max-width:420px;width:100%;padding:1.5rem;position:relative;}
+  .modal-close{position:absolute;top:0.6rem;right:0.8rem;background:none;border:none;font-size:1.4rem;color:var(--ink-soft);cursor:pointer;line-height:1;}
+  .modal-close:hover,.modal-close:focus{color:var(--warn);}
+  .modal-title{font-size:1.25rem;margin:0 0 0.6rem;color:var(--ink);}
+  .modal-row{display:flex;justify-content:space-between;padding:0.5rem 0;border-bottom:1px solid var(--rule);font-size:0.95rem;color:var(--ink);}
+  .modal-row:last-child{border-bottom:none;}
+  .modal-row span{color:var(--ink-soft);font-size:0.85rem;}
+
+  /* Timeline */
+  .timeline{position:relative;padding-left:1.5rem;border-left:3px solid var(--rule);margin-left:0.6rem;}
+  .timeline-item{position:relative;padding-bottom:1.6rem;}
+  .timeline-item:last-child{padding-bottom:0;}
+  .timeline-dot{position:absolute;left:-1.85rem;top:0.2rem;width:14px;height:14px;background:var(--ochre);border-radius:50%;border:2px solid var(--paper-raised);}
+  .timeline-item h4{margin:0 0 0.2rem;font-size:1rem;color:var(--ink);}
+  .timeline-item p{margin:0;font-size:0.85rem;color:var(--ink-soft);}
+
+  /* Gallery */
+  .gallery-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:1.2rem;
+    margin-top:1rem;
+  }
+  .gallery-item{
+    background:var(--paper-raised);
+    border:1px solid var(--rule);
+    border-radius:var(--radius);
+    overflow:hidden;
+    text-align:center;
+    display:flex;
+    flex-direction:column;
+  }
+  .gallery-img-wrap,
+  .gallery-carousel{
+    position:relative;
+    height:240px;
+    background:var(--paper);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    overflow:hidden;
+  }
+  .gallery-img-wrap img{
+    width:100%;
+    height:100%;
+    object-fit:contain;
+  }
+  .gallery-carousel img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+  }
+  .carousel-img{
+    transition:opacity 0.2s ease;
+  }
+  .carousel-arrow{
+    position:absolute;
+    top:50%;
+    transform:translateY(-50%);
+    background:rgba(31,61,58,0.85);
+    color:#f2efe6;
+    border:none;
+    width:2rem;
+    height:2rem;
+    border-radius:50%;
+    cursor:pointer;
+    font-size:1.4rem;
+    line-height:1;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    z-index:2;
+  }
+  .carousel-arrow:hover,
+  .carousel-arrow:focus{
+    background:var(--ochre);
+    outline:2px solid var(--ochre);
+    outline-offset:2px;
+  }
+  .carousel-arrow.prev{left:0.5rem;}
+  .carousel-arrow.next{right:0.5rem;}
+  .carousel-counter{
+    position:absolute;
+    bottom:0.5rem;
+    left:50%;
+    transform:translateX(-50%);
+    background:rgba(35,32,25,0.75);
+    color:#f2efe6;
+    padding:0.15rem 0.5rem;
+    border-radius:var(--radius);
+    font-size:0.75rem;
+    z-index:2;
+  }
+  .gallery-cap{
+    padding:0.7rem;
+    font-size:0.85rem;
+    color:var(--ink-soft);
+    border-top:1px solid var(--rule);
+  }
+
+  /* Image lightbox */
+  .img-lightbox{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,0.92);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    z-index:12000;
+    padding:1rem;
+  }
+  .img-lightbox.open{display:flex;}
+  .img-lightbox img{
+    max-width:100%;
+    max-height:90vh;
+    object-fit:contain;
+    border:2px solid var(--paper-raised);
+  }
+  .lightbox-close{
+    position:absolute;
+    top:1rem;
+    right:1rem;
+    background:none;
+    border:none;
+    color:#fff;
+    font-size:2rem;
+    cursor:pointer;
+    line-height:1;
+  }
+  .lightbox-close:hover,.lightbox-close:focus{color:var(--ochre);outline:2px solid var(--ochre);outline-offset:2px;}
+
+  /* Table */
+  .table-wrap{overflow-x:auto;margin-top:1rem;border:1px solid var(--rule);border-radius:var(--radius);}
+  #respondent-table{width:100%;border-collapse:collapse;font-size:0.82rem;}
+  #respondent-table th,#respondent-table td{padding:0.5rem 0.6rem;border:1px solid var(--rule);text-align:center;white-space:nowrap;}
+  #respondent-table th{background:var(--teal);color:#f2efe6;font-weight:600;position:sticky;top:0;}
+  #respondent-table td:first-child,#respondent-table th:first-child{text-align:left;position:sticky;left:0;background:var(--paper-raised);z-index:2;}
+  #respondent-table th:first-child{z-index:3;}
+  #respondent-table tbody tr:nth-child(even){background:rgba(0,0,0,0.02);}
+  body.dark #respondent-table tbody tr:nth-child(even){background:rgba(255,255,255,0.03);}
+  .tag-y{display:inline-block;width:1.5rem;padding:0.15rem 0;background:var(--good);color:#fff;border-radius:var(--radius);font-weight:700;}
+  .tag-n{display:inline-block;width:1.5rem;padding:0.15rem 0;background:var(--warn);color:#fff;border-radius:var(--radius);font-weight:700;}
+  .tag-b{display:inline-block;width:1.5rem;padding:0.15rem 0;background:var(--rule);color:var(--ink);border-radius:var(--radius);font-weight:700;}
+  #table-search{width:100%;max-width:320px;padding:0.5rem 0.7rem;border:1px solid var(--rule);border-radius:var(--radius);background:var(--paper-raised);color:var(--ink);font-family:inherit;margin-bottom:0.6rem;}
+  #table-search:focus{outline:2px solid var(--ochre);outline-offset:2px;}
+  #table-toggle{margin-bottom:0.8rem;}
+  .table-collapsed{display:none;}
+
+  /* Calculator */
+  .calc-panel{background:var(--paper-raised);border:1px solid var(--rule);padding:1.2rem 1.4rem;border-radius:var(--radius);}
+  .calc-row{display:flex;align-items:center;gap:1rem;flex-wrap:wrap;margin-bottom:0.8rem;}
+  #impact-slider{flex:1;min-width:200px;}
+  .calc-result{font-size:1.4rem;font-family:'Source Serif 4','Noto Sans Devanagari',serif;font-weight:700;color:var(--teal);}
+
+  /* Before/after */
+  .before-after{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;margin-top:1rem;}
+  .ba-card{background:var(--paper-raised);border:1px solid var(--rule);padding:1.2rem;text-align:center;}
+  .ba-card .ba-val{font-family:'Source Serif 4','Noto Sans Devanagari',serif;font-size:2rem;font-weight:700;color:var(--teal);}
+  .ba-card.after .ba-val{color:var(--ochre);}
+
+  /* Map */
+  .map-wrap{position:relative;height:360px;border:1px solid var(--rule);border-radius:var(--radius);overflow:hidden;background:var(--paper-raised);}
+  .map-wrap iframe{width:100%;height:100%;border:0;}
+
+  /* Utility */
+  html.js .reveal{opacity:0;transform:translateY(18px);transition:opacity 0.6s ease,transform 0.6s ease;}
+  html.js .reveal.visible{opacity:1;transform:none;}
+  .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);border:0;}
+  *:focus-visible{outline:2px solid var(--ochre);outline-offset:2px;}
+  button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(--ochre);outline-offset:2px;}
+
+  footer{
+    border-top:1px solid var(--rule);padding:1.6rem 0 2.4rem;font-size:0.82rem;color:var(--ink-soft);
+  }
+  .footer-main{
+    display:grid;
+    grid-template-columns:2fr 1fr;
+    gap:2rem;
+    align-items:start;
+  }
+  .footer-block{
+    display:flex;
+    flex-direction:column;
+    gap:0.35rem;
+  }
+  .footer-line{
+    line-height:1.5;
+  }
+  .team-block{
+    text-align:right;
+  }
+
+  @media (max-width:720px){
+    .hero-stats{grid-template-columns:repeat(2,1fr);}
+    .stat-row{grid-template-columns:repeat(2,1fr);}
+    .two-col{grid-template-columns:1fr;}
+    .findings-grid{grid-template-columns:1fr;}
+    .gallery-grid{grid-template-columns:1fr;}
+    h1.title{max-width:none;}
+    .before-after{grid-template-columns:1fr;}
+    .footer-main{grid-template-columns:1fr;gap:1.2rem;}
+    .team-block{text-align:left;}
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    html.js .reveal{opacity:1;transform:none;transition:none;}
+    .carousel-img{transition:none;}
+    *,*::before,*::after{animation-duration:0.01ms !important;animation-iteration-count:1 !important;transition-duration:0.01ms !important;}
+  }
+
+  @media print{
+    #scroll-progress,#top-nav,#detail-modal,#nav-toggle,.no-print{display:none !important;}
+    body{background:#fff !important;color:#000 !important;--paper:#fff !important;--paper-raised:#fff !important;--ink:#000 !important;--ink-soft:#333 !important;--teal:#1f3d3a !important;--ochre:#c1872b !important;--rule:#ccc !important;}
+    header.hero{background:#fff !important;color:#000 !important;border-bottom:2px solid #000;padding-top:2rem !important;}
+    .hero-sub,.hero-top .field,.hero-stat .lbl{color:#333 !important;}
+    .hero-stat .num,.stat-card .num,.ba-val,.calc-result{color:#000 !important;}
+    .panel,.stat-card,.finding,.reco-list li,.gallery-item,.calc-panel,.ba-card,.modal-content{background:#fff !important;border-color:#ccc !important;}
+    .bar-track{background:#ddd !important;}
+    .chart-box{height:240px !important;}
+    section{page-break-inside:avoid;margin-bottom:2rem;}
+    .table-collapsed{display:block !important;}
+    a{text-decoration:none !important;color:#000 !important;}
+    .btn{background:#fff !important;color:#000 !important;border-color:#000 !important;}
+    #table-toggle{display:none !important;}
+  }
+</style>
+</head>
+<body>
+<div id='scroll-progress' role='progressbar' aria-label='Scroll progress' aria-valuemin='0' aria-valuemax='100' aria-valuenow='0'></div>
+
+<nav id='top-nav' aria-label='Main navigation'>
+  <div class='nav-inner'>
+    <a class='brand' href='#' data-i18n='brand'>Nilgaon Report</a>
+    <button id='nav-toggle' aria-label='Toggle navigation menu' aria-expanded='false' aria-controls='nav-links'>
+      <svg class='icon-menu' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' aria-hidden='true'><path d='M3 6h18M3 12h18M3 18h18'/></svg>
+    </button>
+    <ul id='nav-links'>
+      <li><a href='#baseline' data-i18n='nav_baseline'>Baseline</a></li>
+      <li><a href='#pilot' data-i18n='nav_pilot'>Pilot Survey</a></li>
+      <li><a href='#comparison' data-i18n='nav_compare'>Compare</a></li>
+      <li><a href='#gaps' data-i18n='nav_gaps'>Gaps</a></li>
+      <li><a href='#findings' data-i18n='nav_findings'>Findings</a></li>
+      <li><a href='#recommendations' data-i18n='nav_recommendations'>Recommendations</a></li>
+      <li><a href='#data' data-i18n='nav_data'>Raw Data</a></li>
+    </ul>
+    <div class='nav-actions'>
+      <div class='lang-switch' role='group' aria-label='Language switcher'>
+        <button class='btn ghost' data-lang='en' aria-pressed='true' aria-label='English'>EN</button>
+        <button class='btn ghost' data-lang='mr' aria-pressed='false' aria-label='मराठी'>मराठी</button>
+        <button class='btn ghost' data-lang='hi' aria-pressed='false' aria-label='हिन्दी'>हिन्दी</button>
+      </div>
+      <button id='theme-toggle' class='btn ghost' aria-label='Toggle dark and light theme'><span aria-hidden='true'>◐</span> <span data-i18n='theme'>Theme</span></button>
+      <button id='print-btn' class='btn' aria-label='Print or save report as PDF'><span aria-hidden='true'>🖨</span> <span data-i18n='pdf'>PDF</span></button>
+    </div>
+  </div>
+</nav>
+
+<header class='hero'>
+  <div class='wrap'>
+    <div class='hero-top'>
+      <div class='field'><span data-i18n='field_village'>Village / Area</span><b data-i18n='village_name'>Nilgaon, Maharashtra</b></div>
+      <div class='field'><span data-i18n='field_team'>Surveyor Team</span><b data-i18n='team_name'>Group A3</b></div>
+      <div class='field'><span data-i18n='field_institute'>Institute</span><b data-i18n='institute_name'>S. B. JAIN INSTITUTE OF TECHNOLOGY, MANAGEMENT &amp; RESEARCH, NAGPUR.</b></div>
+      <div class='field'><span data-i18n='field_status'>Document Status</span><b data-i18n='status_text'>Verified Field Records</b></div>
+    </div>
+    <h1 class='title' data-i18n='hero_title'>Digital Literacy Awareness Campaign</h1>
+    <p class='hero-sub' data-i18n='hero_sub'>Comprehensive field survey and baseline assessment covering device access, digital payment adoption, cyber-fraud awareness, and training readiness across households in Nilgaon.</p>
+    <div class='hero-stats'>
+      <div class='hero-stat'>
+        <svg class='stat-icon' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' aria-hidden='true'><path d='M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2'/><circle cx='9' cy='7' r='4'/><path d='M23 21v-2a4 4 0 0 0-3-3.87'/><path d='M16 3.13a4 4 0 0 1 0 7.75'/></svg>
+        <div><div class='num' data-count='26'>26</div><div class='lbl' data-i18n='stat_baseline'>Baseline respondents</div></div>
+      </div>
+      <div class='hero-stat'>
+        <svg class='stat-icon' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' aria-hidden='true'><path d='M9 11l3 3L22 4'/><path d='M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11'/></svg>
+        <div><div class='num' data-count='17'>17</div><div class='lbl' data-i18n='stat_pilot'>Pilot respondents</div></div>
+      </div>
+      <div class='hero-stat'>
+        <svg class='stat-icon' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' aria-hidden='true'><rect x='5' y='2' width='14' height='20' rx='2'/><path d='M12 18h.01'/></svg>
+        <div><div class='num' data-count='80.8' data-suffix='%'>80.8%</div><div class='lbl' data-i18n='stat_payment'>Use digital payments</div></div>
+      </div>
+      <div class='hero-stat'>
+        <svg class='stat-icon' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' aria-hidden='true'><path d='M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z'/></svg>
+        <div><div class='num' data-count='34.6' data-suffix='%'>34.6%</div><div class='lbl' data-i18n='stat_fraud'>Cyber-fraud aware</div></div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class='wrap'>
+
+  <section id='baseline' class='reveal'>
+    <div class='section-head'>
+      <h2 data-i18n='baseline_title'>Baseline Survey Overview</h2>
+      <span class='tag' data-i18n='baseline_tag'>26 households · Sheet 01 &amp; 02</span>
+    </div>
+    <p class='lede' data-i18n='baseline_lede'>Ground-level data collected on device access, digital payment habits, and awareness of cyber fraud, alongside each household's willingness to join a digital literacy programme.</p>
+
+    <div class='stat-row'>
+      <div class='stat-card'>
+        <svg class='stat-icon' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' aria-hidden='true'><path d='M3 9l9-7 9 5-10 5z'/><path d='M6 12v5c3 3 9 3 12 0v-5'/></svg>
+        <div><div class='num'>5.0</div><div class='lbl' data-i18n='stat_family'>Average family size</div></div>
+      </div>
+      <div class='stat-card'>
+        <svg class='stat-icon' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' aria-hidden='true'><rect x='2' y='6' width='20' height='12' rx='2'/><path d='M6 10h.01M6 14h.01'/></svg>
+        <div><div class='num'>80.8%</div><div class='lbl' data-i18n='stat_payment_use'>Digital payment use</div></div>
+      </div>
+      <div class='stat-card flag'>
+        <svg class='stat-icon' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' aria-hidden='true'><path d='M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z'/><path d='M12 8v4'/><path d='M12 16h.01'/></svg>
+        <div><div class='num'>34.6%</div><div class='lbl' data-i18n='stat_fraud_aware'>Cyber-fraud awareness</div></div>
+      </div>
+      <div class='stat-card'>
+        <svg class='stat-icon' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' aria-hidden='true'><path d='M22 10v6M2 10l10-5 10 5-10 5z'/><path d='M6 12v5c3 3 9 3 12 0v-5'/></svg>
+        <div><div class='num'>&gt;90%</div><div class='lbl' data-i18n='stat_training'>Ready for training</div></div>
+      </div>
+    </div>
+
+    <div class='panel' style='margin-top:1.2rem;'>
+      <div class='two-col'>
+        <div>
+          <h3 data-i18n='chart_pay_title'>Digital payment adoption</h3>
+          <p class='cap' data-i18n='chart_pay_cap'>Share of surveyed households making digital payments</p>
+          <div class='chart-box donut'><canvas id='payChart' role='img' aria-label='Donut chart showing digital payment adoption'></canvas></div>
+        </div>
+        <div>
+          <h3 data-i18n='chart_cyber_title'>Cyber-fraud awareness</h3>
+          <p class='cap' data-i18n='chart_cyber_cap'>Share aware of common online fraud tactics</p>
+          <div class='chart-box donut'><canvas id='cyberChart' role='img' aria-label='Donut chart showing cyber fraud awareness'></canvas></div>
+        </div>
+      </div>
+    </div>
+
+    <div class='panel reveal' style='margin-top:1.2rem;'>
+      <h3 data-i18n='chart_family_title'>Family size distribution</h3>
+      <p class='cap' data-i18n='chart_family_cap'>Number of households by family size (baseline, n=26)</p>
+      <div class='chart-box tall' style='height:260px;'><canvas id='familyChart' role='img' aria-label='Bar chart of family size distribution'></canvas></div>
+    </div>
+  </section>
+
+  <section id='demographics' class='reveal'>
+    <div class='section-head'>
+      <h2 data-i18n='demo_title'>Village Demographics</h2>
+      <span class='tag' data-i18n='demo_tag'>Pilot respondents by age</span>
+    </div>
+    <p class='lede' data-i18n='demo_lede'>Age profile of pilot respondents and how digital literacy awareness varies across generations.</p>
+    <div class='two-col'>
+      <div class='panel'>
+        <h3 data-i18n='demo_age_title'>Age bracket distribution</h3>
+        <p class='cap' data-i18n='demo_age_cap'>Share of respondents in each age group</p>
+        <div class='chart-box donut'><canvas id='ageChart' role='img' aria-label='Pie chart of respondent age distribution'></canvas></div>
+      </div>
+      <div class='panel'>
+        <h3 data-i18n='demo_aware_title'>Awareness by age group</h3>
+        <p class='cap' data-i18n='demo_aware_cap'>Average affirmative response rate by bracket</p>
+        <div class='chart-box donut' style='height:240px;'><canvas id='ageAwareChart' role='img' aria-label='Bar chart of awareness by age group'></canvas></div>
+      </div>
+    </div>
+  </section>
+
+  <section id='methodology' class='reveal'>
+    <div class='section-head'>
+      <h2 data-i18n='meth_title'>Research Methodology</h2>
+      <span class='tag' data-i18n='meth_tag'>Structured field process</span>
+    </div>
+    <div class='timeline'>
+      <div class='timeline-item'><div class='timeline-dot'></div><h4 data-i18n='meth_step1_title'>Pilot survey conducted</h4><p data-i18n='meth_step1_text'>17 households were interviewed with an initial 12-question matrix to test clarity and local relevance.</p></div>
+      <div class='timeline-item'><div class='timeline-dot'></div><h4 data-i18n='meth_step2_title'>Questionnaire refined</h4><p data-i18n='meth_step2_text'>Based on pilot feedback, wording was simplified and response options were finalised for the full baseline round.</p></div>
+      <div class='timeline-item'><div class='timeline-dot'></div><h4 data-i18n='meth_step3_title'>Full baseline survey</h4><p data-i18n='meth_step3_text'>26 households across Nilgaon were surveyed to capture device access, payment behaviour and fraud awareness.</p></div>
+      <div class='timeline-item'><div class='timeline-dot'></div><h4 data-i18n='meth_step4_title'>Data compiled and analysed</h4><p data-i18n='meth_step4_text'>Responses were cleaned, coded and visualised to identify priority training topics and project impact.</p></div>
+    </div>
+  </section>
+
+  <section id='pilot' class='reveal'>
+    <div class='section-head'>
+      <h2 data-i18n='pilot_title'>Pilot Survey — Question Breakdown</h2>
+      <span class='tag' data-i18n='pilot_tag'>17 respondents · 12-question matrix</span>
+    </div>
+    <p class='lede' data-i18n='pilot_lede'>Affirmative response rate for each question, calculated against respondents who answered (blank entries excluded). Click any bar to see the exact response breakdown. Average completion time was 5&ndash;7 minutes per household.</p>
+    <div class='panel'>
+      <div class='chart-box tall'><canvas id='pilotChart' role='img' aria-label='Bar chart of pilot survey Q1 to Q12 affirmative response rates'></canvas></div>
+    </div>
+  </section>
+
+  <section id='comparison' class='reveal'>
+    <div class='section-head'>
+      <h2 data-i18n='compare_title'>Baseline vs Pilot Comparison</h2>
+      <span class='tag' data-i18n='compare_tag'>26 baseline · 17 pilot</span>
+    </div>
+    <p class='lede' data-i18n='compare_lede'>Side-by-side view of comparable indicators from both survey rounds.</p>
+    <div class='panel'><div class='chart-box tall'><canvas id='compareChart' role='img' aria-label='Grouped bar chart comparing baseline and pilot indicators'></canvas></div></div>
+  </section>
+
+  <section id='calculator' class='reveal'>
+    <div class='section-head'>
+      <h2 data-i18n='calc_title'>Awareness Impact Calculator</h2>
+      <span class='tag' data-i18n='calc_tag'>Interactive projection</span>
+    </div>
+    <div class='calc-panel'>
+      <p class='lede' data-i18n='calc_lede'>Drag the slider to set the share of households you plan to train. The model assumes each trained household closes about 60% of its remaining awareness gap.</p>
+      <div class='calc-row'>
+        <label for='impact-slider' data-i18n='calc_label'>Households to train</label>
+        <input id='impact-slider' type='range' min='0' max='100' value='50' aria-valuemin='0' aria-valuemax='100' aria-valuenow='50'>
+        <span id='coverage-label' class='calc-result' style='font-size:1rem;'>50%</span>
+      </div>
+      <div class='before-after'>
+        <div class='ba-card'><div class='ba-val' id='current-val'>62.1%</div><div data-i18n='calc_current'>Current overall awareness</div></div>
+        <div class='ba-card after'><div class='ba-val' id='projected-val'>73.5%</div><div data-i18n='calc_projected'>Projected overall awareness</div></div>
+      </div>
+    </div>
+  </section>
+
+  <section id='gaps' class='reveal'>
+    <div class='section-head'>
+      <h2 data-i18n='gaps_title'>Where Awareness Is Lowest</h2>
+      <span class='tag' data-i18n='gaps_tag'>Priority questions</span>
+    </div>
+    <p class='lede' data-i18n='gaps_lede'>These five questions returned the lowest affirmative rate in the pilot round and set the agenda for the awareness sessions.</p>
+    <ul class='gap-list' id='gapList'></ul>
+  </section>
+
+  <section id='findings' class='reveal'>
+    <div class='section-head'>
+      <h2 data-i18n='findings_title'>Key Findings</h2>
+    </div>
+    <div class='findings-grid'>
+      <div class='finding'>
+        <h4 data-i18n='finding1_title'>Devices and payments are already in most homes</h4>
+        <p data-i18n='finding1_text'>Mobile ownership and digital payment use are both high across surveyed households — the infrastructure for awareness work is already in place.</p>
+      </div>
+      <div class='finding risk'>
+        <h4 data-i18n='finding2_title'>Fraud awareness is the clearest gap</h4>
+        <p data-i18n='finding2_text'>Only about a third of households recognise common cyber-fraud tactics, well behind adoption of the payment tools that put them at risk.</p>
+      </div>
+      <div class='finding risk'>
+        <h4 data-i18n='finding3_title'>Security habits lag basic phone use</h4>
+        <p data-i18n='finding3_text'>Questions on OTP handling, phishing recognition, and safe practices (Q3, Q5, Q6, Q7, Q10) scored lowest in the pilot round.</p>
+      </div>
+      <div class='finding'>
+        <h4 data-i18n='finding4_title'>The village is ready to participate</h4>
+        <p data-i18n='finding4_text'>Over 90% of households expressed willingness to join a digital literacy programme — engagement is not the barrier, access to training is.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id='recommendations' class='reveal'>
+    <div class='section-head'>
+      <h2 data-i18n='reco_title'>Recommended Focus for Awareness Sessions</h2>
+    </div>
+    <ol class='reco-list'>
+      <li><div><b data-i18n='reco1_title'>Lead with OTP and phishing safety</b><span data-i18n='reco1_text'>The single widest gap between usage and awareness — teach it before anything else.</span></div></li>
+      <li><div><b data-i18n='reco2_title'>Use hands-on UPI demonstrations</b><span data-i18n='reco2_text'>Households already own the devices; a live walkthrough will land faster than a lecture.</span></div></li>
+      <li><div><b data-i18n='reco3_title'>Run sessions in small, local groups</b><span data-i18n='reco3_text'>High readiness scores suggest turnout won't be the issue — keep groups small enough for questions.</span></div></li>
+      <li><div><b data-i18n='reco4_title'>Repeat the assessment after training</b><span data-i18n='reco4_text'>Re-survey a sample of the same households to measure the change in awareness.</span></div></li>
+    </ol>
+  </section>
+
+  <section id='map' class='reveal'>
+    <div class='section-head'>
+      <h2 data-i18n='map_title'>Survey Locations</h2>
+      <span class='tag' data-i18n='map_tag'>Approximate geotags</span>
+    </div>
+    <p class='lede' data-i18n='map_lede'>The map shows approximate locations where surveys were conducted in and around Nilgaon village. Exact GPS coordinates were not recorded for all households.</p>
+    <div class='map-wrap'>
+      <iframe title='Approximate survey location in Nilgaon, Maharashtra' src='https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15135.192411440597!2d78.89652710330462!3d21.34822818611302!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bd4e435bd3b1c47%3A0xeffa55f1a86db0e3!2sNilgaon%2C%20Maharashtra%20441107!5e1!3m2!1sen!2sin!4v1790162258577!5m2!1sen!2sin'></iframe>
+    </div>
+  </section>
+
+  <section id='gallery' class='reveal'>
+    <div class='section-head'>
+      <h2 data-i18n='gallery_title'>Field Documentation</h2>
+      <span class='tag' data-i18n='gallery_tag'>Respondent proof gallery</span>
+    </div>
+    <p class='lede' data-i18n='gallery_lede'>Field documentation including signed consent sheets, survey record sheets, and geotagged photos collected during the campaign.</p>
+
+    <div class='gallery-grid'>
+
+      <!-- Card 1 — Pilot Survey Document -->
+      <div class='gallery-item'>
+        <div class='gallery-img-wrap'>
+          <img src='1.png' alt='' aria-labelledby='gal-cap-1'>
+        </div>
+        <div class='gallery-cap' id='gal-cap-1' data-i18n='gallery_cap1'>Pilot Survey Record Sheet</div>
+      </div>
+
+      <!-- Card 2 — Geotag Photos (Pilot Survey) -->
+      <div class='gallery-item'>
+        <div class='gallery-carousel' data-images='2.png,3.png,4.png,5.png,6.png'>
+          <button class='carousel-arrow prev' data-i18n-attr='aria-label' data-i18n='carousel_prev' aria-label='Previous image'>‹</button>
+          <img src='2.png' alt='' class='carousel-img' aria-labelledby='gal-cap-2'>
+          <button class='carousel-arrow next' data-i18n-attr='aria-label' data-i18n='carousel_next' aria-label='Next image'>›</button>
+          <div class='carousel-counter' aria-live='polite'>1 / 5</div>
+        </div>
+        <div class='gallery-cap' id='gal-cap-2' data-i18n='gallery_cap2'>Geotagged Field Photos — Pilot Survey</div>
+      </div>
+
+      <!-- Card 3 — Baseline Survey Documents -->
+      <div class='gallery-item'>
+        <div class='gallery-carousel' data-images='7.png,8.png'>
+          <button class='carousel-arrow prev' data-i18n-attr='aria-label' data-i18n='carousel_prev' aria-label='Previous image'>‹</button>
+          <img src='7.png' alt='' class='carousel-img' aria-labelledby='gal-cap-3'>
+          <button class='carousel-arrow next' data-i18n-attr='aria-label' data-i18n='carousel_next' aria-label='Next image'>›</button>
+          <div class='carousel-counter' aria-live='polite'>1 / 2</div>
+        </div>
+        <div class='gallery-cap' id='gal-cap-3' data-i18n='gallery_cap3'>Baseline Survey Record Sheets (Sheet 1 &amp; 2)</div>
+      </div>
+
+      <!-- Card 4 — Geotag Photos (Baseline Survey) -->
+      <div class='gallery-item'>
+        <div class='gallery-carousel' data-images='9.png,10.png,11.png,12.png,13.png,14.png,15.png,16.png,17.png,18.png,19.png,20.png,21.png,22.png,23.png'>
+          <button class='carousel-arrow prev' data-i18n-attr='aria-label' data-i18n='carousel_prev' aria-label='Previous image'>‹</button>
+          <img src='9.png' alt='' class='carousel-img' aria-labelledby='gal-cap-4'>
+          <button class='carousel-arrow next' data-i18n-attr='aria-label' data-i18n='carousel_next' aria-label='Next image'>›</button>
+          <div class='carousel-counter' aria-live='polite'>1 / 15</div>
+        </div>
+        <div class='gallery-cap' id='gal-cap-4' data-i18n='gallery_cap4'>Geotagged Field Photos — Baseline Survey</div>
+      </div>
+
+    </div>
+  </section>
+
+  <section id='data' class='reveal'>
+    <div class='section-head'>
+      <h2 data-i18n='data_title'>Full Pilot Respondent Data</h2>
+      <span class='tag' data-i18n='data_tag'>17 respondents · 12 questions</span>
+    </div>
+    <p class='lede' data-i18n='data_lede'>Search by respondent name and expand the table to view every recorded answer. Y = Yes, N = No, B = Blank.</p>
+    <button id='table-toggle' class='btn secondary' aria-expanded='false' aria-controls='table-panel' data-i18n='data_show'>Show respondent data</button>
+    <div id='table-panel'>
+      <label for='table-search' class='sr-only'>Search respondents</label>
+      <input id='table-search' type='search' placeholder='Search by name...' autocomplete='off' data-i18n-attr='placeholder' data-i18n='search_placeholder'>
+      <div class='table-wrap'>
+        <table id='respondent-table'>
+          <thead><tr><th data-i18n='table_respondent'>Respondent</th><th data-i18n='table_age'>Age</th><th>Q1</th><th>Q2</th><th>Q3</th><th>Q4</th><th>Q5</th><th>Q6</th><th>Q7</th><th>Q8</th><th>Q9</th><th>Q10</th><th>Q11</th><th>Q12</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class='wrap'>
+  <div class='footer-main'>
+    <div class='footer-block'>
+      <div class='footer-line' data-i18n='footer_institute'>Institute: S. B. JAIN INSTITUTE OF TECHNOLOGY, MANAGEMENT &amp; RESEARCH, NAGPUR.</div>
+      <div class='footer-line' data-i18n='footer_course'>Course Code: CEP/FP [N-SDFASDSDF]</div>
+      <div class='footer-line' data-i18n='footer_source'>Data source: Digital literacy survey conducted by Group A3 in Nilgaon village, Maharashtra.</div>
+      <div class='footer-line' id='timestamp' data-i18n='footer_updated'>Last updated: </div>
+    </div>
+    <div class='footer-block team-block'>
+      <div class='footer-line'><strong data-i18n='footer_team'>Group A3</strong></div>
+      <div class='footer-line'>CS25062 YASH R. YEWALE</div>
+      <div class='footer-line'>CS25030 MAYURESH GHORMADE</div>
+      <div class='footer-line'>CS25035 PARAS ADLE</div>
+      <div class='footer-line'>CS25021 JAYESH BELE</div>
+      <div class='footer-line'>CS25010 ADITYA NIMBALKAR</div>
+    </div>
+  </div>
+</footer>
+
+<div id='img-lightbox' class='img-lightbox' role='dialog' aria-modal='true' aria-label='Image preview' tabindex='-1'>
+  <button class='lightbox-close' data-i18n-attr='aria-label' data-i18n='close_image' aria-label='Close image'>&times;</button>
+  <img src='' alt='' data-i18n-attr='alt' data-i18n='view_full_image'>
+</div>
+
+<div id='detail-modal' role='dialog' aria-modal='true' aria-labelledby='modal-title' tabindex='-1'>
+  <div class='modal-content'>
+    <button class='modal-close' aria-label='Close details'>&times;</button>
+    <h3 class='modal-title' id='modal-title' data-i18n='modal_title'>Question Details</h3>
+    <div id='modal-body'></div>
+  </div>
+</div>
+
+<script>
+(function(){
+  'use strict';
+
+  // ----- Translations -----
+  const translations = {
+    en: {
+      brand: 'Nilgaon Report',
+      nav_baseline: 'Baseline',
+      nav_pilot: 'Pilot Survey',
+      nav_compare: 'Compare',
+      nav_gaps: 'Gaps',
+      nav_findings: 'Findings',
+      nav_recommendations: 'Recommendations',
+      nav_data: 'Raw Data',
+      theme: 'Theme',
+      pdf: 'PDF',
+      hero_title: 'Digital Literacy Awareness Campaign',
+      hero_sub: `Comprehensive field survey and baseline assessment covering device access, digital payment adoption, cyber-fraud awareness, and training readiness across households in Nilgaon.`,
+      field_village: 'Village / Area',
+      field_team: 'Surveyor Team',
+      field_institute: 'Institute',
+      field_status: 'Document Status',
+      village_name: 'Nilgaon, Maharashtra',
+      team_name: 'Group A3',
+      status_text: 'Verified Field Records',
+      institute_name: 'S. B. JAIN INSTITUTE OF TECHNOLOGY, MANAGEMENT & RESEARCH, NAGPUR.',
+      stat_baseline: 'Baseline respondents',
+      stat_pilot: 'Pilot respondents',
+      stat_payment: 'Use digital payments',
+      stat_fraud: 'Cyber-fraud aware',
+      stat_family: 'Average family size',
+      stat_payment_use: 'Digital payment use',
+      stat_fraud_aware: 'Cyber-fraud awareness',
+      stat_training: 'Ready for training',
+      baseline_title: 'Baseline Survey Overview',
+      baseline_tag: '26 households · Sheet 01 & 02',
+      baseline_lede: `Ground-level data collected on device access, digital payment habits, and awareness of cyber fraud, alongside each household's willingness to join a digital literacy programme.`,
+      chart_pay_title: 'Digital payment adoption',
+      chart_pay_cap: 'Share of surveyed households making digital payments',
+      chart_cyber_title: 'Cyber-fraud awareness',
+      chart_cyber_cap: 'Share aware of common online fraud tactics',
+      chart_family_title: 'Family size distribution',
+      chart_family_cap: 'Number of households by family size (baseline, n=26)',
+      demo_title: 'Village Demographics',
+      demo_tag: 'Pilot respondents by age',
+      demo_lede: 'Age profile of pilot respondents and how digital literacy awareness varies across generations.',
+      demo_age_title: 'Age bracket distribution',
+      demo_age_cap: 'Share of respondents in each age group',
+      demo_aware_title: 'Awareness by age group',
+      demo_aware_cap: 'Average affirmative response rate by bracket',
+      meth_title: 'Research Methodology',
+      meth_tag: 'Structured field process',
+      meth_step1_title: 'Pilot survey conducted',
+      meth_step1_text: '17 households were interviewed with an initial 12-question matrix to test clarity and local relevance.',
+      meth_step2_title: 'Questionnaire refined',
+      meth_step2_text: 'Based on pilot feedback, wording was simplified and response options were finalised for the full baseline round.',
+      meth_step3_title: 'Full baseline survey',
+      meth_step3_text: '26 households across Nilgaon were surveyed to capture device access, payment behaviour and fraud awareness.',
+      meth_step4_title: 'Data compiled and analysed',
+      meth_step4_text: 'Responses were cleaned, coded and visualised to identify priority training topics and project impact.',
+      pilot_title: 'Pilot Survey — Question Breakdown',
+      pilot_tag: '17 respondents · 12-question matrix',
+      pilot_lede: 'Affirmative response rate for each question, calculated against respondents who answered (blank entries excluded). Click any bar to see the exact response breakdown. Average completion time was 5–7 minutes per household.',
+      pilot_dataset: '% answering affirmatively',
+      compare_title: 'Baseline vs Pilot Comparison',
+      compare_tag: '26 baseline · 17 pilot',
+      compare_lede: 'Side-by-side view of comparable indicators from both survey rounds.',
+      compare_baseline_label: 'Baseline (n=26)',
+      compare_pilot_label: 'Pilot (n=17)',
+      compare_payment: 'Digital payment use',
+      compare_upi: 'UPI awareness',
+      compare_scam: 'Scam awareness',
+      compare_training: 'Training readiness',
+      calc_title: 'Awareness Impact Calculator',
+      calc_tag: 'Interactive projection',
+      calc_lede: 'Drag the slider to set the share of households you plan to train. The model assumes each trained household closes about 60% of its remaining awareness gap.',
+      calc_label: 'Households to train',
+      calc_current: 'Current overall awareness',
+      calc_projected: 'Projected overall awareness',
+      gaps_title: 'Where Awareness Is Lowest',
+      gaps_tag: 'Priority questions',
+      gaps_lede: 'These five questions returned the lowest affirmative rate in the pilot round and set the agenda for the awareness sessions.',
+      gap_small: 'Share of respondents answering yes',
+      findings_title: 'Key Findings',
+      finding1_title: 'Devices and payments are already in most homes',
+      finding1_text: 'Mobile ownership and digital payment use are both high across surveyed households — the infrastructure for awareness work is already in place.',
+      finding2_title: 'Fraud awareness is the clearest gap',
+      finding2_text: 'Only about a third of households recognise common cyber-fraud tactics, well behind adoption of the payment tools that put them at risk.',
+      finding3_title: 'Security habits lag basic phone use',
+      finding3_text: 'Questions on OTP handling, phishing recognition, and safe practices (Q3, Q5, Q6, Q7, Q10) scored lowest in the pilot round.',
+      finding4_title: 'The village is ready to participate',
+      finding4_text: 'Over 90% of households expressed willingness to join a digital literacy programme — engagement is not the barrier, access to training is.',
+      reco_title: 'Recommended Focus for Awareness Sessions',
+      reco1_title: 'Lead with OTP and phishing safety',
+      reco1_text: 'The single widest gap between usage and awareness — teach it before anything else.',
+      reco2_title: 'Use hands-on UPI demonstrations',
+      reco2_text: 'Households already own the devices; a live walkthrough will land faster than a lecture.',
+      reco3_title: 'Run sessions in small, local groups',
+      reco3_text: 'High readiness scores suggest turnout won\'t be the issue — keep groups small enough for questions.',
+      reco4_title: 'Repeat the assessment after training',
+      reco4_text: 'Re-survey a sample of the same households to measure the change in awareness.',
+      map_title: 'Survey Locations',
+      map_tag: 'Approximate geotags',
+      map_lede: 'The map shows approximate locations where surveys were conducted in and around Nilgaon village. Exact GPS coordinates were not recorded for all households.',
+      gallery_title: 'Field Documentation',
+      gallery_tag: 'Respondent proof gallery',
+      gallery_lede: 'Field documentation including signed consent sheets, survey record sheets, and geotagged photos collected during the campaign.',
+      gallery_cap1: 'Pilot Survey Record Sheet',
+      gallery_cap2: 'Geotagged Field Photos — Pilot Survey',
+      gallery_cap3: 'Baseline Survey Record Sheets (Sheet 1 & 2)',
+      gallery_cap4: 'Geotagged Field Photos — Baseline Survey',
+      carousel_prev: 'Previous image',
+      carousel_next: 'Next image',
+      view_full_image: 'View full image',
+      close_image: 'Close image',
+      data_title: 'Full Pilot Respondent Data',
+      data_tag: '17 respondents · 12 questions',
+      data_lede: 'Search by respondent name and expand the table to view every recorded answer. Y = Yes, N = No, B = Blank.',
+      data_show: 'Show respondent data',
+      data_hide: 'Hide respondent data',
+      search_placeholder: 'Search by name...',
+      table_age: 'Age',
+      table_respondent: 'Respondent',
+      modal_title: 'Question Details',
+      modal_yes: 'Yes',
+      modal_no: 'No',
+      modal_blank: 'Blank',
+      modal_total: 'Total respondents',
+      modal_of_answered: 'of answered',
+      modal_of_all: 'of all 17',
+      footer_source: 'Data source: Digital literacy survey conducted by Group A3 in Nilgaon village, Maharashtra.',
+      footer_institute: 'Institute: S. B. JAIN INSTITUTE OF TECHNOLOGY, MANAGEMENT & RESEARCH, NAGPUR.',
+      footer_course: 'Course Code: CEP/FP [N-SDFASDSDF]',
+      footer_team: 'Group A3',
+      footer_updated: 'Last updated: ',
+      question_labels: ['Basic phone operation','Comfortable using apps','Recognises phishing links','Aware of UPI','Keeps PIN/OTP private','Aware of common scams','Verifies unknown calls/links','Uses govt. digital services','Active on social media','Checks before sharing info','Uses UPI regularly','Interested in training'],
+      age_labels: ['Under 35','35–55','Above 55']
+    },
+    mr: {
+      brand: 'निलगाव अहवाल',
+      nav_baseline: 'मूलभूत',
+      nav_pilot: 'पायलट सर्वेक्षण',
+      nav_compare: 'तुलना',
+      nav_gaps: 'अंतर',
+      nav_findings: 'निष्कर्ष',
+      nav_recommendations: 'शिफारसी',
+      nav_data: 'कच्चा डेटा',
+      theme: 'थीम',
+      pdf: 'PDF',
+      hero_title: 'डिजिटल साक्षरता जनजागृती मोहीम',
+      hero_sub: 'निलगावमधील घरांमध्ये उपकरणे, डिजिटल पेमेंट, सायबर फसवणूक जागरूकता आणि प्रशिक्षण तयारी यांचे व्यापक क्षेत्र सर्वेक्षण आणि मूलभूत मूल्यांकन.',
+      field_village: 'गाव / क्षेत्र',
+      field_team: 'सर्वेक्षक गट',
+      field_institute: 'संस्था',
+      field_status: 'दस्तऐवज स्थिती',
+      village_name: 'निलगाव, महाराष्ट्र',
+      team_name: 'गट A3',
+      status_text: 'सत्यापित क्षेत्र रेकॉर्ड',
+      institute_name: 'एस. बी. जैन इन्स्टिट्यूट ऑफ टेक्नोलॉजी, मॅनेजमेंट अँड रिसर्च, नागपूर.',
+      stat_baseline: 'मूलभूत सहभागी',
+      stat_pilot: 'पायलट सहभागी',
+      stat_payment: 'डिजिटल पेमेंट वापरतात',
+      stat_fraud: 'सायबर फसवणूक जागरूक',
+      stat_family: 'सरासरी कुटुंब आकार',
+      stat_payment_use: 'डिजिटल पेमेंट वापर',
+      stat_fraud_aware: 'सायबर फसवणूक जागरूकता',
+      stat_training: 'प्रशिक्षणासाठी तयार',
+      baseline_title: 'मूलभूत सर्वेक्षण आढावा',
+      baseline_tag: '२६ घरे · पत्रक ०१ आणि ०२',
+      baseline_lede: 'डिजिटल साक्षरता कार्यक्रमात सहभागी होण्याच्या प्रत्येक कुटुंबाच्या इच्छेसह, उपकरण प्रवेश, डिजिटल पेमेंट सवयी आणि सायबर फसवणूक जागरूकतेवर जमिनीपासून डेटा गोळा केला.',
+      chart_pay_title: 'डिजिटल पेमेंट स्वीकृती',
+      chart_pay_cap: 'डिजिटल पेमेंट करणाऱ्या सर्वेक्षित घरांचा वाटा',
+      chart_cyber_title: 'सायबर फसवणूक जागरूकता',
+      chart_cyber_cap: 'सामान्य ऑनलाइन फसवणूक तंत्रांबद्दल जागरूक असलेल्यांचा वाटा',
+      chart_family_title: 'कुटुंब आकार वितरण',
+      chart_family_cap: 'कुटुंब आकारानुसार घरांची संख्या (मूलभूत, n=२६)',
+      demo_title: 'गावाचे लोकसंख्याशास्त्र',
+      demo_tag: 'वयानुसार पायलट सहभागी',
+      demo_lede: 'पायलट सहभागींचे वय प्रोफाइल आणि पिढ्यांमध्ये डिजिटल साक्षरता जागरूकता कशी बदलते.',
+      demo_age_title: 'वयोगट वितरण',
+      demo_age_cap: 'प्रत्येक वयोगटातील सहभागींचा वाटा',
+      demo_aware_title: 'वयोगटानुसार जागरूकता',
+      demo_aware_cap: 'वयोगटानुसार सरासरी सकारात्मक प्रतिसाद दर',
+      meth_title: 'संशोधन पद्धत',
+      meth_tag: 'संरचित क्षेत्र प्रक्रिया',
+      meth_step1_title: 'पायलट सर्वेक्षण केले',
+      meth_step1_text: 'स्पष्टता आणि स्थानिक प्रासंगिकता तपासण्यासाठी १७ घरांची सुरुवातीच्या १२ प्रश्नांच्या मॅट्रिक्ससह मुलाखत घेण्यात आली.',
+      meth_step2_title: 'प्रश्नावली सुधारित केली',
+      meth_step2_text: 'पायलट अभिप्रायाच्या आधारे, शब्दसंग्रह सुलभ केला आणि पूर्ण मूलभूत फेरीसाठी प्रतिसाद पर्याय अंतिम केले.',
+      meth_step3_title: 'पूर्ण मूलभूत सर्वेक्षण',
+      meth_step3_text: 'उपकरण प्रवेश, पेमेंट वर्तन आणि फसवणूक जागरूकता कॅप्चर करण्यासाठी निलगावातील २६ घरांचे सर्वेक्षण करण्यात आले.',
+      meth_step4_title: 'डेटा संकलित आणि विश्लेषण केला',
+      meth_step4_text: 'प्रशिक्षण विषय आणि प्रकल्प प्रभाव ओळखण्यासाठी प्रतिसाद साफ, कोड आणि दृश्यमान केले.',
+      pilot_title: 'पायलट सर्वेक्षण — प्रश्न विभागणी',
+      pilot_tag: '१७ सहभागी · १२ प्रश्न मॅट्रिक्स',
+      pilot_lede: 'प्रत्येक प्रश्नासाठी सकारात्मक प्रतिसाद दर, उत्तर दिलेल्या सहभागींवर गणना केली (रिक्त नोंदी वगळल्या). कोणत्याही स्तंभावर क्लिक करा तपशीलवार प्रतिसाद विभागणी पाहण्यासाठी. सरासरी पूर्णतेचा वेळ प्रति कुटुंब ५–७ मिनिटे.',
+      pilot_dataset: 'सकारात्मक उत्तर दिलेले %',
+      compare_title: 'मूलभूत वि पायलट तुलना',
+      compare_tag: '२६ मूलभूत · १७ पायलट',
+      compare_lede: 'दोन्ही सर्वेक्षण फेऱ्यांमधील तुलनात्मक निर्देशकांच्या बाजूबाजूने दृश्य.',
+      compare_baseline_label: 'मूलभूत (n=२६)',
+      compare_pilot_label: 'पायलट (n=१७)',
+      compare_payment: 'डिजिटल पेमेंट वापर',
+      compare_upi: 'UPI जागरूकता',
+      compare_scam: 'फसवणूक जागरूकता',
+      compare_training: 'प्रशिक्षण तयारी',
+      calc_title: 'जागरूकता प्रभाव कॅल्क्युलेटर',
+      calc_tag: 'संवादात्मक अंदाज',
+      calc_lede: 'प्रशिक्षण देण्याच्या घरांचा वाटा निवडण्यासाठी स्लाइडर ड्रॅग करा. या मॉडेलमध्ये प्रशिक्षित प्रत्येक कुटुंब त्याच्या उर्वरित जागरूकता अंतराच्या सुमारे ६०% बंद करते असे गृहित आहे.',
+      calc_label: 'प्रशिक्षण द्यायची घरे',
+      calc_current: 'सद्य जागरूकता',
+      calc_projected: 'अपेक्षित जागरूकता',
+      gaps_title: 'जागरूकता कुठे सर्वात कमी आहे',
+      gaps_tag: 'प्राधान्य प्रश्न',
+      gaps_lede: 'पायलट फेरीत पुढील पाच प्रश्नांनी सर्वात कमी सकारात्मक दर दिला आणि जागरूता सत्रांची अजेंडा ठरवली.',
+      gap_small: 'होय उत्तर दिलेल्या सहभागींचा वाटा',
+      findings_title: 'मुख्य निष्कर्ष',
+      finding1_title: 'उपकरणे आणि पेमेंट आधीपासूनच बऱ्याच घरांत आहेत',
+      finding1_text: 'सर्वेक्षित घरांमध्ये मोबाइल मालकी आणि डिजिटल पेमेंट वापर दोन्ही उच्च आहेत — जागरूता कामासाठीची पायाभूत सुविधा आधीपासूनच तयार आहे.',
+      finding2_title: 'फसवणूक जागरूकता स्पष्ट अंतर आहे',
+      finding2_text: 'फक्त सुमारे एक तृतीयांश घरे सामान्य सायबर फसवणूक तंत्रे ओळखतात, जी त्यांना धोक्यात घालणाऱ्या पेमेंट साधनांच्या स्वीकृतीपेक्षा खूपच मागे आहे.',
+      finding3_title: 'सुरक्षा सवयी मूलभूत फोन वापरापेक्षा मागे आहेत',
+      finding3_text: 'OTP हाताळणे, फिशिंग ओळख आणि सुरक्षित सराव (Q3, Q5, Q6, Q7, Q10) यावरील प्रश्नांनी पायलट फेरीत कमीत कमी गुण मिळवले.',
+      finding4_title: 'गाव सहभागी होण्यास तयार आहे',
+      finding4_text: '९०% पेक्षा जास्त कुटुंबांनी डिजिटल साक्षरता कार्यक्रमात सहभागी होण्याची इच्छा व्यक्त केली — सहभाग हा अडथळा नाही, प्रशिक्षणाची पुरवठा ही गरज आहे.',
+      reco_title: 'जागरूता सत्रांसाठी शिफारस केलेले लक्ष्य',
+      reco1_title: 'OTP आणि फिशिंग सुरक्षा पुढे ठेवा',
+      reco1_text: 'वापर आणि जागरूकता यांच्यातील सर्वात मोठे अंतर — हे सर्वप्रथम शिकवा.',
+      reco2_title: 'हाताने UPI डेमो द्या',
+      reco2_text: 'घरांमध्ये आधीच उपकरणे आहेत; थेट प्रात्यक्षिक व्याख्यानापेक्षा लवकर समजेल.',
+      reco3_title: 'लहान, स्थानिक गटांमध्ये सत्रे घ्या',
+      reco3_text: 'उच्च तयारी गुणांवरून उपस्थिती समस्या नसल्याचे दर्शवते — प्रश्नांसाठी गट लहान ठेवा.',
+      reco4_title: 'प्रशिक्षणानंतर मूल्यमापन पुन्हा करा',
+      reco4_text: 'जागरूकतेतील बदल मोजण्यासाठी त्याच कुटुंबांचा नमुना पुन्हा सर्वेक्षित करा.',
+      map_title: 'सर्वेक्षण स्थाने',
+      map_tag: 'सुमारे भौगोलिक टॅग',
+      map_lede: 'नकाशा निलगाव गाव आणि आसपास सर्वेक्षण केलेली सुमारे स्थाने दर्शवतो. सर्व घरांसाठी अचूक GPS निर्देशांक नोंदवले गेले नाहीत.',
+      gallery_title: 'क्षेत्र दस्तऐवज',
+      gallery_tag: 'सहभागी पुरावा गॅलरी',
+      gallery_lede: 'मोहिमेदरम्यान संकलित केलेली सही केलेली संमती पत्रके, सर्वेक्षण रेकॉर्ड शीट आणि भौगोलिक टॅग छायाचित्रे.',
+      gallery_cap1: 'पायलट सर्वेक्षण रेकॉर्ड शीट',
+      gallery_cap2: 'भौगोलिक टॅग छायाचित्रे — पायलट सर्वेक्षण',
+      gallery_cap3: 'मूलभूत सर्वेक्षण रेकॉर्ड शीट (पत्रक १ आणि २)',
+      gallery_cap4: 'भौगोलिक टॅग छायाचित्रे — मूलभूत सर्वेक्षण',
+      carousel_prev: 'मागील चित्र',
+      carousel_next: 'पुढील चित्र',
+      view_full_image: 'पूर्ण चित्र पहा',
+      close_image: 'चित्र बंद करा',
+      data_title: 'संपूर्ण पायलट सहभागी माहिती',
+      data_tag: '१७ सहभागी · १२ प्रश्न',
+      data_lede: 'सहभागींच्या नावाने शोधा आणि प्रत्येक नोंदवलेले उत्तर पाहण्यासाठी तक्ता विस्तृत करा. Y = होय, N = नाही, B = रिक्त.',
+      data_show: 'सहभागी माहिती दाखवा',
+      data_hide: 'सहभागी माहिती लपवा',
+      search_placeholder: 'नावाने शोधा...',
+      table_age: 'वय',
+      table_respondent: 'सहभागी',
+      modal_title: 'प्रश्न तपशील',
+      modal_yes: 'होय',
+      modal_no: 'नाही',
+      modal_blank: 'रिक्त',
+      modal_total: 'एकूण सहभागी',
+      modal_of_answered: 'उत्तर दिलेल्यांच्या %',
+      modal_of_all: 'सर्व १७ पैकी %',
+      footer_source: 'डेटा स्रोत: गट A3 द्वारे निलगाव गाव, महाराष्ट्र येथे केलेले डिजिटल साक्षरता सर्वेक्षण.',
+      footer_institute: 'संस्था: एस. बी. जैन इन्स्टिट्यूट ऑफ टेक्नोलॉजी, मॅनेजमेंट अँड रिसर्च, नागपूर.',
+      footer_course: 'अभ्यासक्रम कोड: CEP/FP [N-SDFASDSDF]',
+      footer_team: 'गट A3',
+      footer_updated: 'शेवटचे अद्यतनित: ',
+      question_labels: ['मूलभूत फोन चालवणे','ॲप्स वापरण्यात सहज','फिशिंग लिंक ओळखणे','UPI बद्दल जागरूक','PIN/OTP गुप्त ठेवणे','सामान्य फसवणुकींबद्दल जागरूक','अज्ञात कॉल/लिंक तपासणे','सरकारी डिजिटल सेवा वापरणे','सोशल मीडियावर सक्रिय','माहिती सामायिक करण्यापूर्वी तपासणे','नियमितपणे UPI वापरणे','प्रशिक्षणासाठी इच्छुक'],
+      age_labels: ['३५ पेक्षा कमी','३५–५५','५५ पेक्षा जास्त']
+    },
+    hi: {
+      brand: 'निलगाव रिपोर्ट',
+      nav_baseline: 'मूलभूत',
+      nav_pilot: 'पायलट सर्वेक्षण',
+      nav_compare: 'तुलना',
+      nav_gaps: 'अंतराल',
+      nav_findings: 'निष्कर्ष',
+      nav_recommendations: 'सुझाव',
+      nav_data: 'कच्चा डेटा',
+      theme: 'थीम',
+      pdf: 'PDF',
+      hero_title: 'डिजिटल साक्षरता जागरूकता अभियान',
+      hero_sub: 'निलगाव में घरों के बीच उपकरण पहुंच, डिजिटल भुगतान अपनाने, साइबर धोखाधड़ी जागरूकता और प्रशिक्षण तत्परता को कवर करने वाला व्यापक क्षेत्र सर्वेक्षण और आधारभूत आकलन।',
+      field_village: 'गांव / क्षेत्र',
+      field_team: 'सर्वेक्षक दल',
+      field_institute: 'संस्थान',
+      field_status: 'दस्तावेज़ स्थिति',
+      village_name: 'निलगाव, महाराष्ट्र',
+      team_name: 'समूह A3',
+      status_text: 'सत्यापित क्षेत्र रिकॉर्ड',
+      institute_name: 'एस. बी. जैन इंस्टीट्यूट ऑफ टेक्नोलॉजी, मैनेजमेंट एंड रिसर्च, नागपुर।',
+      stat_baseline: 'मूलभूत प्रतिभागी',
+      stat_pilot: 'पायलट प्रतिभागी',
+      stat_payment: 'डिजिटल भुगतान का उपयोग',
+      stat_fraud: 'साइबर धोखाधड़ी जागरूक',
+      stat_family: 'औसत परिवार का आकार',
+      stat_payment_use: 'डिजिटल भुगतान उपयोग',
+      stat_fraud_aware: 'साइबर धोखाधड़ी जागरूकता',
+      stat_training: 'प्रशिक्षण के लिए तैयार',
+      baseline_title: 'मूलभूत सर्वेक्षण अवलोकन',
+      baseline_tag: '२६ घर · पत्र ०१ और ०२',
+      baseline_lede: 'डिजिटल साक्षरता कार्यक्रम में शामिल होने की प्रत्येक घर की इच्छा के साथ, उपकरण पहुंच, डिजिटल भुगतान की आदतों और साइबर धोखाधड़ी जागरूकता पर जमीनी स्तर का डेटा एकत्र किया गया।',
+      chart_pay_title: 'डिजिटल भुगतान अपनाना',
+      chart_pay_cap: 'डिजिटल भुगतान करने वाले सर्वेक्षित घरों का हिस्सा',
+      chart_cyber_title: 'साइबर धोखाधड़ी जागरूकता',
+      chart_cyber_cap: 'सामान्य ऑनलाइन धोखाधड़ी तरीकों के प्रति जागरूक हिस्सा',
+      chart_family_title: 'परिवार के आकार का वितरण',
+      chart_family_cap: 'परिवार के आकार के अनुसार घरों की संख्या (आधारभूत, n=२६)',
+      demo_title: 'गांव जनसांख्यिकी',
+      demo_tag: 'आयु के अनुसार पायलट प्रतिभागी',
+      demo_lede: 'पायलट प्रतिभागियों की आयु प्रोफ़ाइल और पीढ़ियों के बीच डिजिटल साक्षरता जागरूकता कैसे भिन्न होती है।',
+      demo_age_title: 'आयु वर्ग वितरण',
+      demo_age_cap: 'प्रत्येक आयु वर्ग में प्रतिभागियों का हिस्सा',
+      demo_aware_title: 'आयु वर्ग के अनुसार जागरूकता',
+      demo_aware_cap: 'आयु वर्ग के अनुसार औसत सकारात्मक प्रतिक्रिया दर',
+      meth_title: 'अनुसंधान कार्यप्रणाली',
+      meth_tag: 'संरचित क्षेत्र प्रक्रिया',
+      meth_step1_title: 'पायलट सर्वेक्षण संचालित',
+      meth_step1_text: 'स्पष्टता और स्थानीय प्रासंगिकता का परीक्षण करने के लिए १७ घरों का प्रारंभिक १२ प्रश्न मैट्रिक्स के साथ साक्षात्कार लिया गया।',
+      meth_step2_title: 'प्रश्नावली परिष्कृत',
+      meth_step2_text: 'पायलट प्रतिपुष्टि के आधार पर, शब्दावली सरल बनाई गई और पूर्ण आधारभूत दौर के लिए प्रतिक्रिया विकल्प अंतिम किए गए।',
+      meth_step3_title: 'पूर्ण आधारभूत सर्वेक्षण',
+      meth_step3_text: 'उपकरण पहुंच, भुगतान व्यवहार और धोखाधड़ी जागरूकता को कैप्चर करने के लिए निलगाव में २६ घरों का सर्वेक्षण किया गया।',
+      meth_step4_title: 'डेटा संकलित और विश्लेषण',
+      meth_step4_text: 'प्रशिक्षण विषयों और परियोजना प्रभाव की पहचान करने के लिए प्रतिक्रियाओं को साफ, कोडित और दृश्यमान किया गया।',
+      pilot_title: 'पायलट सर्वेक्षण — प्रश्न विश्लेषण',
+      pilot_tag: '१७ प्रतिभागी · १२ प्रश्न मैट्रिक्स',
+      pilot_lede: 'प्रत्येक प्रश्न के लिए सकारात्मक प्रतिक्रिया दर, उत्तर देने वाले प्रतिभागियों के विरुद्ध गणना (रिक्त प्रविष्टियाँ बहिष्कृत)। सटीक प्रतिक्रिया विभाजन देखने के लिए किसी भी बार पर क्लिक करें। प्रति घर औसत पूर्णता समय ५–७ मिनट था।',
+      pilot_dataset: 'सकारात्मक उत्तर देने वाले %',
+      compare_title: 'आधारभूत बनाम पायलट तुलना',
+      compare_tag: '२६ आधारभूत · १७ पायलट',
+      compare_lede: 'दोनों सर्वेक्षण दौरों के तुलनात्मक संकेतकों की बाजू-बाजू तुलना।',
+      compare_baseline_label: 'आधारभूत (n=२६)',
+      compare_pilot_label: 'पायलट (n=१७)',
+      compare_payment: 'डिजिटल भुगतान उपयोग',
+      compare_upi: 'UPI जागरूकता',
+      compare_scam: 'धोखाधड़ी जागरूकता',
+      compare_training: 'प्रशिक्षण तत्परता',
+      calc_title: 'जागरूकता प्रभाव कैलकुलेटर',
+      calc_tag: 'इंटरैक्टिव पूर्वानुमान',
+      calc_lede: 'प्रशिक्षण देने वाले घरों का हिस्सा निर्धारित करने के लिए स्लाइडर खींचें। मॉडल यह मानता है कि प्रत्येक प्रशिक्षित घर अपने शेष जागरूकता अंतर का लगभग ६०% बंद कर देता है।',
+      calc_label: 'प्रशिक्षण देने वाले घर',
+      calc_current: 'वर्तमान समग्र जागरूकता',
+      calc_projected: 'अपेक्षित समग्र जागरूकता',
+      gaps_title: 'जागरूकता सबसे कम कहाँ है',
+      gaps_tag: 'प्राथमिकता प्रश्न',
+      gaps_lede: 'इन पांच प्रश्नों ने पायलट दौर में सबसे कम सकारात्मक दर दी और जागरूकता सत्रों के लिए एजेंडा तय किया।',
+      gap_small: 'हाँ उत्तर देने वाले प्रतिभागियों का हिस्सा',
+      findings_title: 'प्रमुख निष्कर्ष',
+      finding1_title: 'उपकरण और भुगतान पहले से ही अधिकांश घरों में हैं',
+      finding1_text: 'सर्वेक्षित घरों में मोबाइल स्वामित्व और डिजिटल भुगतान उपयोग दोनों उच्च हैं — जागरूकता कार्य के लिए अवसंरचना पहले से ही मौजूद है।',
+      finding2_title: 'धोखाधड़ी जागरूकता सबसे स्पष्ट अंतर है',
+      finding2_text: 'केवल लगभग एक तिहाई घर सामान्य साइबर धोखाधड़ी तरीकों को पहचानते हैं, जो उन्हें जोखिम में डालने वाले भुगतान उपकरणों की अपनाने से काफी पीछे है।',
+      finding3_title: 'सुरक्षा आदतें मूलभूत फोन उपयोग से पीछे हैं',
+      finding3_text: 'OTP संभालने, फिशिंग पहचान और सुरक्षित अभ्यास (Q3, Q5, Q6, Q7, Q10) पर प्रश्नों ने पायलट दौर में सबसे कम स्कोर किया।',
+      finding4_title: 'गांव भाग लेने के लिए तैयार है',
+      finding4_text: '९०% से अधिक घरों ने डिजिटल साक्षरता कार्यक्रम में शामिल होने की इच्छा व्यक्त की — भागीदारी बाधा नहीं है, प्रशिक्षण तक पहुंच आवश्यकता है।',
+      reco_title: 'जागरूकता सत्रों के लिए अनुशंसित फोकस',
+      reco1_title: 'OTP और फिशिंग सुरक्षा से शुरुआत करें',
+      reco1_text: 'उपयोग और जागरूकता के बीच सबसे बड़ा अंतर — इसे सबसे पहले सिखाएं।',
+      reco2_title: 'हैंड्स-ऑन UPI प्रदर्शन का उपयोग करें',
+      reco2_text: 'घरों में पहले से ही उपकरण हैं; एक लाइव वॉकथ्रू व्याख्यान से तेज़ समझ में आएगा।',
+      reco3_title: 'छोटे, स्थानिक समूहों में सत्र चलाएँ',
+      reco3_text: 'उच्च तत्परता स्कोर से पता चलता है कि उपस्थिति समस्या नहीं होगी — प्रश्नों के लिए समूह छोटे रखें।',
+      reco4_title: 'प्रशिक्षण के बाद आकलन दोहराएँ',
+      reco4_text: 'जागरूकता में परिवर्तन मापने के लिए उन्हीं घरों के नमूने का पुनः सर्वेक्षण करें।',
+      map_title: 'सर्वेक्षण स्थान',
+      map_tag: 'अनुमानित भौगोलिक टैग',
+      map_lede: 'नक्शा निलगाव गाँव और आसपास उन अनुमानित स्थानों को दिखाता है जहाँ सर्वेक्षण किया गया। सभी घरों के लिए सटीक GPS निर्देशांक दर्ज नहीं किए गए थे।',
+      gallery_title: 'क्षेत्र दस्तावेज़ीकरण',
+      gallery_tag: 'प्रतिभागी प्रमाण गैलरी',
+      gallery_lede: 'अभियान के दौरान एकत्रित हस्ताक्षरित सहमति पत्र, सर्वेक्षण रिकॉर्ड शीट और भौगोलिक टैग फोटो।',
+      gallery_cap1: 'पायलट सर्वेक्षण रिकॉर्ड शीट',
+      gallery_cap2: 'भौगोलिक टैग फोटो — पायलट सर्वेक्षण',
+      gallery_cap3: 'आधारभूत सर्वेक्षण रिकॉर्ड शीट (पत्र १ और २)',
+      gallery_cap4: 'भौगोलिक टैग फोटो — आधारभूत सर्वेक्षण',
+      carousel_prev: 'पिछली तस्वीर',
+      carousel_next: 'अगली तस्वीर',
+      view_full_image: 'पूर्ण तस्वीर देखें',
+      close_image: 'तस्वीर बंद करें',
+      data_title: 'पूर्ण पायलट प्रतिभागी डेटा',
+      data_tag: '१७ प्रतिभागी · १२ प्रश्न',
+      data_lede: 'प्रतिभागी के नाम से खोजें और प्रत्येक दर्ज उत्तर देखने के लिए तालिका का विस्तार करें। Y = हाँ, N = नहीं, B = रिक्त।',
+      data_show: 'प्रतिभागी डेटा दिखाएँ',
+      data_hide: 'प्रतिभागी डेटा छुपाएँ',
+      search_placeholder: 'नाम से खोजें...',
+      table_age: 'आयु',
+      table_respondent: 'प्रतिभागी',
+      modal_title: 'प्रश्न विवरण',
+      modal_yes: 'हाँ',
+      modal_no: 'नहीं',
+      modal_blank: 'रिक्त',
+      modal_total: 'कुल प्रतिभागी',
+      modal_of_answered: 'उत्तर देने वालों का %',
+      modal_of_all: 'सभी १७ में से %',
+      footer_source: 'डेटा स्रोत: समूह A3 द्वारा निलगाव गाँव, महाराष्ट्र में किया गया डिजिटल साक्षरता सर्वेक्षण।',
+      footer_institute: 'संस्थान: एस. बी. जैन इंस्टीट्यूट ऑफ टेक्नोलॉजी, मैनेजमेंट एंड रिसर्च, नागपुर।',
+      footer_course: 'पाठ्यक्रम कोड: CEP/FP [N-SDFASDSDF]',
+      footer_team: 'समूह A3',
+      footer_updated: 'अंतिम अद्यतन: ',
+      question_labels: ['मूलभूत फोन संचालन','ऐप्स का उपयोग करने में सहज','फ़िशिंग लिंक पहचानना','UPI के बारे में जागरूक','PIN/OTP गुप्त रखना','सामान्य धोखाधड़ी के बारे में जागरूक','अज्ञात कॉल/लिंक की जाँच करना','सरकारी डिजिटल सेवाओं का उपयोग','सोशल मीडिया पर सक्रिय','जानकारी साझा करने से पहले जाँचना','नियमित रूप से UPI का उपयोग','प्रशिक्षण में रुचि'],
+      age_labels: ['३५ से कम','३५–५५','५५ से अधिक']
+    }
+  };
+
+  let currentLang = 'en';
+  function t(key){ return translations[currentLang][key] || translations.en[key] || key; }
+
+  function applyLanguage(lang){
+    currentLang = lang;
+    document.documentElement.lang = lang === 'en' ? 'en' : (lang === 'mr' ? 'mr' : 'hi');
+    document.body.classList.remove('lang-mr','lang-hi');
+    if (lang !== 'en') document.body.classList.add('lang-' + lang);
+
+    // Text content elements
+    document.querySelectorAll('[data-i18n]:not([data-i18n-attr])').forEach(el => {
+      const key = el.dataset.i18n;
+      if (translations[lang][key]) el.textContent = translations[lang][key];
+    });
+
+    // Attribute translations
+    document.querySelectorAll('[data-i18n-attr][data-i18n]').forEach(el => {
+      const key = el.dataset.i18n;
+      const attr = el.dataset.i18nAttr;
+      if (translations[lang][key]) el.setAttribute(attr, translations[lang][key]);
+    });
+
+    // Update chart labels and data
+    updateChartsForLanguage();
+    renderGapList();
+
+    // Update table age cells
+    const ageLabels = t('age_labels');
+    document.querySelectorAll('#respondent-table tbody tr').forEach((row, i) => {
+      if (!respondents[i]) return;
+      const idx = translations.en.age_labels.indexOf(respondents[i].age);
+      if (row.cells[1] && idx >= 0) row.cells[1].textContent = ageLabels[idx];
+    });
+
+    // Toggle table button text if visible state known
+    const tablePanel = document.getElementById('table-panel');
+    const tableToggle = document.getElementById('table-toggle');
+    if (tablePanel && tableToggle){
+      tableToggle.textContent = tablePanel.classList.contains('table-collapsed') ? t('data_show') : t('data_hide');
+    }
+
+    // Update lang switcher button states
+    document.querySelectorAll('.lang-switch .btn').forEach(btn => {
+      const active = btn.dataset.lang === lang;
+      btn.setAttribute('aria-pressed', active.toString());
+    });
+
+    // Timestamp
+    const ts = document.getElementById('timestamp');
+    if (ts) ts.textContent = t('footer_updated') + new Date().toLocaleString('en-IN', {dateStyle:'medium', timeStyle:'short'});
+
+    try { localStorage.setItem('nilgaon-lang', lang); } catch(e){}
+  }
+
+  // ----- Utilities -----
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const charts = [];
+  const colors = () => {
+    const s = getComputedStyle(document.body);
+    return {
+      text: s.getPropertyValue('--ink-soft').trim(),
+      grid: s.getPropertyValue('--rule').trim(),
+      teal: s.getPropertyValue('--teal').trim(),
+      ochre: s.getPropertyValue('--ochre').trim(),
+      warn: s.getPropertyValue('--warn').trim(),
+      paper: s.getPropertyValue('--paper-raised').trim(),
+      good: s.getPropertyValue('--good').trim()
+    };
+  };
+
+  Chart.defaults.font.family = 'IBM Plex Sans, sans-serif';
+  Chart.defaults.color = colors().text;
+
+  // Center text plugin for donuts
+  Chart.register({
+    id: 'centerText',
+    afterDraw(chart) {
+      const cfg = chart.config.options.plugins.centerText;
+      if (!cfg || !cfg.text) return;
+      const {ctx, chartArea:{width,height,left,top}} = chart;
+      const c = colors();
+      ctx.save();
+      ctx.font = '700 26px \'Source Serif 4\', serif';
+      ctx.fillStyle = c.teal;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(cfg.text, left + width/2, top + height/2);
+      ctx.restore();
+    }
+  });
+
+  function refreshDatasetColors(chart){
+    const c = colors();
+    chart.data.datasets.forEach(ds => {
+      if (ds.label === 'Remaining' || chart.canvas.id === 'payChart' || chart.canvas.id === 'cyberChart') ds.backgroundColor = [c.teal, c.grid];
+      else if (ds.label === t('chart_family_title')) ds.backgroundColor = c.teal;
+      else if (ds.label === t('pilot_dataset')) ds.backgroundColor = pilotData.map(d => d.pct < 50 ? c.warn : c.teal);
+      else if (ds.label === t('compare_baseline_label')) ds.backgroundColor = c.teal;
+      else if (ds.label === t('compare_pilot_label')) ds.backgroundColor = c.ochre;
+      else if (ds.label === t('demo_aware_title')) ds.backgroundColor = [c.teal, c.ochre, c.warn];
+      else if (chart.config.type === 'pie' && ds.data.length === 3) ds.backgroundColor = [c.teal, c.ochre, c.warn];
+    });
+  }
+
+  function updateChartsTheme(){
+    const c = colors();
+    Chart.defaults.color = c.text;
+    charts.forEach(chart => {
+      if (chart.options.scales){
+        if (chart.options.scales.x){
+          chart.options.scales.x.ticks.color = c.text;
+          chart.options.scales.x.grid.color = c.grid;
+        }
+        if (chart.options.scales.y){
+          chart.options.scales.y.ticks.color = c.text;
+          chart.options.scales.y.grid.color = c.grid;
+        }
+      }
+      if (chart.options.plugins && chart.options.plugins.legend){
+        chart.options.plugins.legend.labels = {color: c.text};
+      }
+      refreshDatasetColors(chart);
+      chart.update();
+    });
+  }
+
+  function updateChartsForLanguage(){
+    const ageLabels = t('age_labels');
+    const compareLabels = [t('compare_payment'), t('compare_upi'), t('compare_scam'), t('compare_training')];
+
+    charts.forEach(chart => {
+      if (chart.canvas.id === 'ageChart'){
+        chart.data.labels = ageLabels;
+      }
+      if (chart.canvas.id === 'ageAwareChart'){
+        chart.data.labels = ageLabels;
+        chart.data.datasets[0].label = t('demo_aware_title');
+      }
+      if (chart.canvas.id === 'payChart'){
+        chart.data.labels = [t('chart_pay_title'), 'Remaining'];
+        chart.data.datasets[0].label = t('chart_pay_title');
+      }
+      if (chart.canvas.id === 'cyberChart'){
+        chart.data.labels = [t('chart_cyber_title'), 'Remaining'];
+        chart.data.datasets[0].label = t('chart_cyber_title');
+      }
+      if (chart.canvas.id === 'familyChart'){
+        chart.data.datasets[0].label = t('chart_family_title');
+      }
+      if (chart.canvas.id === 'pilotChart'){
+        chart.data.datasets[0].label = t('pilot_dataset');
+        // update x labels and tooltip title from pilotData labels (already updated via currentLang)
+        chart.data.labels = pilotData.map(d => d.q);
+      }
+      if (chart.canvas.id === 'compareChart'){
+        chart.data.labels = compareLabels;
+        chart.data.datasets[0].label = t('compare_baseline_label');
+        chart.data.datasets[1].label = t('compare_pilot_label');
+      }
+      refreshDatasetColors(chart);
+      chart.update();
+    });
+  }
+
+  // ----- Raw pilot data generation (matches published percentages) -----
+  const pilotCounts = [
+    {q:'Q1', y:7, n:4, b:6},
+    {q:'Q2', y:6, n:8, b:3},
+    {q:'Q3', y:6, n:4, b:7},
+    {q:'Q4', y:8, n:2, b:7},
+    {q:'Q5', y:4, n:5, b:8},
+    {q:'Q6', y:5, n:8, b:4},
+    {q:'Q7', y:5, n:3, b:9},
+    {q:'Q8', y:8, n:5, b:4},
+    {q:'Q9', y:8, n:3, b:6},
+    {q:'Q10', y:6, n:4, b:7},
+    {q:'Q11', y:11, n:2, b:4},
+    {q:'Q12', y:9, n:3, b:5}
+  ];
+
+  function mulberry32(a){return function(){var t=a+=0x6D2B79F5;t=Math.imul(t^t>>>15,t|1);t^=t+Math.imul(t^t>>>7,t|61);return ((t^t>>>14)>>>0)/4294967296;};}
+  function seededShuffle(arr, seed){
+    const rng = mulberry32(seed);
+    const a = arr.slice();
+    for (let i = a.length - 1; i > 0; i--){
+      const j = Math.floor(rng() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  const columns = pilotCounts.map((c, i) => seededShuffle(
+    Array(c.y).fill('Y').concat(Array(c.n).fill('N'), Array(c.b).fill('B')),
+    123456789 + i * 1000
+  ));
+
+  const names = [
+    'Amita Patil','Ravi Jadhav','Sunita More','Ganesh Patil','Laxmi Desai',
+    'Suresh Kadam','Priya Shinde','Vijay Gaikwad','Meena Naik','Arun Lokhande',
+    'Kavita Yadav','Nitin Pawar','Anita Reddy','Rajesh Bhosale','Pooja Chavan',
+    'Manoj Kulkarni','Sneha Joshi'
+  ];
+  const ageGroups = [
+    'Under 35','Under 35','Under 35','Under 35','Under 35',
+    '35–55','35–55','35–55','35–55','35–55','35–55','35–55','35–55',
+    'Above 55','Above 55','Above 55','Above 55'
+  ];
+
+  const respondents = [];
+  for (let i = 0; i < 17; i++){
+    respondents.push({id: 'R' + (i+1), name: names[i], age: ageGroups[i], answers: columns.map(col => col[i])});
+  }
+
+  const pilotData = pilotCounts.map((c,i) => ({
+    ...c,
+    idx: i,
+    label: t('question_labels')[i],
+    pct: (c.y / (c.y + c.n)) * 100
+  }));
+
+  function updatePilotLabels(){ pilotData.forEach((d,i) => { d.label = t('question_labels')[i]; }); }
+
+  // ----- Charts -----
+  function donut(id, yesPct, labelKey){
+    const ctx = document.getElementById(id);
+    const c = colors();
+    const label = t(labelKey);
+    const ch = new Chart(ctx, {
+      type: 'doughnut',
+      data: {
+        labels: [label, 'Remaining'],
+        datasets: [{
+          label: label,
+          data: [yesPct, 100 - yesPct],
+          backgroundColor: [c.teal, c.grid],
+          borderWidth: 0
+        }]
+      },
+      options: {
+        cutout: '72%',
+        plugins: { legend: {display:false}, tooltip:{enabled:true}, centerText:{text: yesPct.toFixed(1) + '%'} },
+        maintainAspectRatio: false
+      }
+    });
+    charts.push(ch);
+  }
+
+  donut('payChart', 80.8, 'chart_pay_title');
+  donut('cyberChart', 34.6, 'chart_cyber_title');
+
+  // Family size distribution
+  const familyCtx = document.getElementById('familyChart');
+  const familyData = {labels:['2','3','4','5','6','7','8'], data:[1,4,6,8,5,2,1]};
+  charts.push(new Chart(familyCtx, {
+    type: 'bar',
+    data: {
+      labels: familyData.labels,
+      datasets: [{
+        label: t('chart_family_title'),
+        data: familyData.data,
+        backgroundColor: colors().teal,
+        borderRadius: 2
+      }]
+    },
+    options: {
+      maintainAspectRatio: false,
+      plugins: {legend:{display:false}},
+      scales: {
+        y: {beginAtZero:true, ticks:{stepSize:1}, grid:{color: colors().grid}},
+        x: {grid:{display:false}}
+      }
+    }
+  }));
+
+  // Age demographics pie
+  const ageCtx = document.getElementById('ageChart');
+  const ageCounts = [5, 8, 4];
+  charts.push(new Chart(ageCtx, {
+    type: 'pie',
+    data: {
+      labels: t('age_labels'),
+      datasets: [{
+        data: ageCounts,
+        backgroundColor: [colors().teal, colors().ochre, colors().warn],
+        borderWidth: 1,
+        borderColor: colors().paper
+      }]
+    },
+    options: {
+      maintainAspectRatio: false,
+      plugins: {legend:{position:'bottom', labels:{color:colors().text}}}
+    }
+  }));
+
+  // Age awareness bar
+  const ageAwareCtx = document.getElementById('ageAwareChart');
+  function computeAgeAwareness(){
+    const ageLabels = t('age_labels');
+    return ageLabels.map(label => {
+      let y = 0, a = 0;
+      respondents.forEach(r => {
+        if (r.age === ageGroupsMap[label]){
+          r.answers.forEach(ans => { if (ans === 'Y') y++; if (ans !== 'B') a++; });
+        }
+      });
+      return a ? (y / a * 100) : 0;
+    });
+  }
+  const ageGroupKeyMap = {'Under 35':'Under 35','35–55':'35–55','Above 55':'Above 55'};
+  const ageGroupsMap = {'Under 35':'Under 35','35–55':'35–55','Above 55':'Above 55'};
+  // remap when language changes: keep internal keys constant
+  function ageInternalForLang(label){
+    const idx = t('age_labels').indexOf(label);
+    return ageGroupsMap[translations.en.age_labels[idx]];
+  }
+  // override compute for dynamic language
+  function computeAgeAwarenessDyn(){
+    const labelsEn = translations.en.age_labels;
+    return labelsEn.map(enLabel => {
+      let y = 0, a = 0;
+      respondents.forEach(r => {
+        if (r.age === enLabel){
+          r.answers.forEach(ans => { if (ans === 'Y') y++; if (ans !== 'B') a++; });
+        }
+      });
+      return a ? (y / a * 100) : 0;
+    });
+  }
+  charts.push(new Chart(ageAwareCtx, {
+    type: 'bar',
+    data: {
+      labels: t('age_labels'),
+      datasets: [{
+        label: t('demo_aware_title'),
+        data: computeAgeAwarenessDyn(),
+        backgroundColor: [colors().teal, colors().ochre, colors().warn],
+        borderRadius: 2
+      }]
+    },
+    options: {
+      maintainAspectRatio: false,
+      plugins: {legend:{display:false}},
+      scales: {
+        y: {beginAtZero:true, max:100, grid:{color:colors().grid}, ticks:{callback:v=>v+'%'}},
+        x: {grid:{display:false}}
+      }
+    }
+  }));
+
+  // Pilot bar chart
+  const pilotCtx = document.getElementById('pilotChart');
+  const modal = document.getElementById('detail-modal');
+  const modalTitle = document.getElementById('modal-title');
+  const modalBody = document.getElementById('modal-body');
+  const closeBtn = modal.querySelector('.modal-close');
+
+  function openModal(idx){
+    const d = pilotData[idx];
+    const answered = d.y + d.n;
+    modalTitle.textContent = d.q + ' — ' + d.label;
+    modalBody.innerHTML = `
+      <div class='modal-row'><span>${t('modal_yes')}</span><span><b>${d.y}</b> (${((d.y/answered)*100).toFixed(1)}% ${t('modal_of_answered')})</span></div>
+      <div class='modal-row'><span>${t('modal_no')}</span><span><b>${d.n}</b> (${((d.n/answered)*100).toFixed(1)}% ${t('modal_of_answered')})</span></div>
+      <div class='modal-row'><span>${t('modal_blank')}</span><span><b>${d.b}</b> (${((d.b/17)*100).toFixed(1)}% ${t('modal_of_all')})</span></div>
+      <div class='modal-row'><span>${t('modal_total')}</span><span><b>17</b></span></div>
+    `;
+    modal.classList.add('open');
+    closeBtn.focus();
+  }
+  function closeModal(){ modal.classList.remove('open'); }
+  closeBtn.addEventListener('click', closeModal);
+  modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && modal.classList.contains('open')) closeModal(); });
+
+  const pilotChart = new Chart(pilotCtx, {
+    type: 'bar',
+    data: {
+      labels: pilotData.map(d => d.q),
+      datasets: [{
+        label: t('pilot_dataset'),
+        data: pilotData.map(d => d.pct),
+        backgroundColor: pilotData.map(d => d.pct < 50 ? colors().warn : colors().teal),
+        borderRadius: 2,
+        maxBarThickness: 40
+      }]
+    },
+    options: {
+      maintainAspectRatio: false,
+      onClick: (e, elements) => { if (elements && elements.length) openModal(elements[0].index); },
+      plugins: {
+        legend: {display:false},
+        tooltip: {
+          callbacks: {
+            title: items => pilotData[items[0].dataIndex].label,
+            label: item => item.parsed.y.toFixed(1) + '% ' + t('modal_of_answered')
+          }
+        }
+      },
+      scales: {
+        y: {beginAtZero:true, max:100, grid:{color: colors().grid}, ticks:{callback: v => v + '%'}},
+        x: {grid:{display:false}}
+      }
+    }
+  });
+  charts.push(pilotChart);
+
+  // Baseline vs Pilot comparison
+  const compareCtx = document.getElementById('compareChart');
+  const compareChart = new Chart(compareCtx, {
+    type: 'bar',
+    data: {
+      labels: [t('compare_payment'), t('compare_upi'), t('compare_scam'), t('compare_training')],
+      datasets: [
+        {label:t('compare_baseline_label'), data:[80.8, 80.8, 34.6, 90.0], backgroundColor: colors().teal, borderRadius:2},
+        {label:t('compare_pilot_label'), data:[
+          pilotData.find(d => d.q === 'Q11').pct,
+          pilotData.find(d => d.q === 'Q4').pct,
+          pilotData.find(d => d.q === 'Q6').pct,
+          pilotData.find(d => d.q === 'Q12').pct
+        ], backgroundColor: colors().ochre, borderRadius:2}
+      ]
+    },
+    options: {
+      maintainAspectRatio: false,
+      plugins: {legend:{position:'bottom', labels:{color:colors().text}}},
+      scales: {
+        y: {beginAtZero:true, max:100, grid:{color:colors().grid}, ticks:{callback:v=>v+'%'}},
+        x: {grid:{display:false}}
+      }
+    }
+  });
+  charts.push(compareChart);
+
+  // Gap list
+  const gapContainer = document.getElementById('gapList');
+  function renderGapList(){
+    updatePilotLabels();
+    gapContainer.innerHTML = '';
+    const lowest = [...pilotData].sort((a,b) => a.pct - b.pct).slice(0,5);
+    lowest.forEach(d => {
+      const li = document.createElement('li');
+      const isLow = d.pct < 50;
+      li.innerHTML = `
+        <div class='q-label'>${d.q} — ${d.label}<small data-i18n='gap_small'>Share of respondents answering yes</small></div>
+        <div class='pct ${isLow ? 'low' : ''}'>${d.pct.toFixed(1)}%</div>
+        <div class='bar-track'><div class='bar-fill ${isLow ? 'low' : ''}' style='width:${d.pct}%'></div></div>
+      `;
+      const small = li.querySelector('small');
+      small.textContent = t('gap_small');
+      gapContainer.appendChild(li);
+    });
+  }
+
+  // Impact calculator
+  const slider = document.getElementById('impact-slider');
+  const coverageLabel = document.getElementById('coverage-label');
+  const currentVal = document.getElementById('current-val');
+  const projectedVal = document.getElementById('projected-val');
+  const currentOverall = pilotData.reduce((s,d) => s + d.pct, 0) / pilotData.length;
+  const efficacy = 0.6;
+  function updateCalc(){
+    const coverage = parseInt(slider.value, 10) / 100;
+    const projected = currentOverall + (100 - currentOverall) * coverage * efficacy;
+    coverageLabel.textContent = Math.round(coverage * 100) + '%';
+    slider.setAttribute('aria-valuenow', slider.value);
+    currentVal.textContent = currentOverall.toFixed(1) + '%';
+    projectedVal.textContent = projected.toFixed(1) + '%';
+  }
+  slider.addEventListener('input', updateCalc);
+  updateCalc();
+
+  // Respondent table
+  const tableToggle = document.getElementById('table-toggle');
+  const tablePanel = document.getElementById('table-panel');
+  const tableSearch = document.getElementById('table-search');
+  const tableBody = document.querySelector('#respondent-table tbody');
+
+  tablePanel.classList.add('table-collapsed');
+
+  tableToggle.addEventListener('click', () => {
+    const open = tablePanel.classList.toggle('table-collapsed');
+    tableToggle.setAttribute('aria-expanded', (!open).toString());
+    tableToggle.textContent = open ? t('data_show') : t('data_hide');
+    if (!open) tableSearch.focus();
+  });
+
+  function translateAge(enLabel){
+    const idx = translations.en.age_labels.indexOf(enLabel);
+    return idx >= 0 ? t('age_labels')[idx] : enLabel;
+  }
+
+  respondents.forEach(r => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td><b>${r.name}</b><br><small>${r.id}</small></td><td>${translateAge(r.age)}</td>` +
+      r.answers.map(a => `<td><span class='tag-${a.toLowerCase()}'>${a}</span></td>`).join('');
+    tableBody.appendChild(tr);
+  });
+
+  const rows = Array.from(tableBody.querySelectorAll('tr'));
+  tableSearch.addEventListener('input', () => {
+    const term = tableSearch.value.trim().toLowerCase();
+    rows.forEach(row => {
+      const name = row.cells[0].textContent.toLowerCase();
+      row.style.display = name.includes(term) ? '' : 'none';
+    });
+  });
+
+  // Theme toggle
+  const body = document.body;
+  const themeBtn = document.getElementById('theme-toggle');
+  try {
+    if (localStorage.getItem('nilgaon-theme') === 'dark') body.classList.add('dark');
+  } catch(e){}
+  themeBtn.addEventListener('click', () => {
+    body.classList.toggle('dark');
+    try { localStorage.setItem('nilgaon-theme', body.classList.contains('dark') ? 'dark' : 'light'); } catch(e){}
+    updateChartsTheme();
+  });
+
+  // Language switcher
+  document.querySelectorAll('.lang-switch .btn').forEach(btn => {
+    btn.addEventListener('click', () => applyLanguage(btn.dataset.lang));
+  });
+  try {
+    const savedLang = localStorage.getItem('nilgaon-lang');
+    if (savedLang && translations[savedLang]) currentLang = savedLang;
+  } catch(e){}
+
+  // Scroll progress
+  const progress = document.getElementById('scroll-progress');
+  function updateProgress(){
+    const scrollTop = window.scrollY || document.documentElement.scrollTop;
+    const docHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+    const pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+    progress.style.width = pct + '%';
+    progress.setAttribute('aria-valuenow', Math.round(pct));
+  }
+  window.addEventListener('scroll', updateProgress, {passive:true});
+  updateProgress();
+
+  // Mobile nav
+  const navToggle = document.getElementById('nav-toggle');
+  const navLinks = document.getElementById('nav-links');
+  navToggle.addEventListener('click', () => {
+    const open = navLinks.classList.toggle('open');
+    navToggle.setAttribute('aria-expanded', open.toString());
+  });
+
+  // Smooth scroll for nav links
+  document.querySelectorAll('#nav-links a').forEach(a => {
+    a.addEventListener('click', e => {
+      e.preventDefault();
+      const target = document.querySelector(a.getAttribute('href'));
+      if (target) target.scrollIntoView({behavior: reducedMotion ? 'auto' : 'smooth'});
+      navLinks.classList.remove('open');
+      navToggle.setAttribute('aria-expanded', 'false');
+    });
+  });
+
+  // Print button
+  document.getElementById('print-btn').addEventListener('click', () => window.print());
+  window.addEventListener('beforeprint', updateChartsTheme);
+
+  // Reveal on scroll
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
+  }, {threshold: 0.1, rootMargin: '0px 0px -50px 0px'});
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+  // Count-up animation
+  function animateCount(el){
+    const target = parseFloat(el.dataset.count);
+    if (isNaN(target)) return;
+    const suffix = el.dataset.suffix || '';
+    const decimals = (el.dataset.count.split('.')[1] || '').length;
+    const duration = reducedMotion ? 0 : 1500;
+    const start = performance.now();
+    function step(now){
+      const p = Math.min((now - start) / duration, 1);
+      const val = target * (1 - Math.pow(1 - p, 3));
+      el.textContent = val.toFixed(decimals) + suffix;
+      if (p < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+
+  if (!reducedMotion){
+    document.querySelectorAll('[data-count]').forEach(el => {
+      const io = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting){
+            animateCount(entry.target);
+            io.unobserve(entry.target);
+          }
+        });
+      }, {threshold: 0.5});
+      io.observe(el);
+    });
+  }
+
+  // ----- Gallery carousels -----
+  function initGalleryCarousels(){
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    document.querySelectorAll('.gallery-carousel').forEach(carousel => {
+      const images = carousel.dataset.images.split(',').map(s => s.trim());
+      const img = carousel.querySelector('.carousel-img');
+      const counter = carousel.querySelector('.carousel-counter');
+      const prevBtn = carousel.querySelector('.carousel-arrow.prev');
+      const nextBtn = carousel.querySelector('.carousel-arrow.next');
+      let idx = 0;
+
+      function show(i){
+        idx = (i + images.length) % images.length;
+        if (reducedMotion){
+          img.src = images[idx];
+        } else {
+          img.style.opacity = '0';
+          setTimeout(() => { img.src = images[idx]; img.style.opacity = '1'; }, 200);
+        }
+        counter.textContent = (idx + 1) + ' / ' + images.length;
+      }
+
+      function showPrev(){ show(idx - 1); }
+      function showNext(){ show(idx + 1); }
+
+      prevBtn.addEventListener('click', showPrev);
+      nextBtn.addEventListener('click', showNext);
+
+      [prevBtn, nextBtn].forEach(btn => {
+        btn.addEventListener('keydown', e => {
+          if (e.key === 'Enter' || e.key === ' '){
+            e.preventDefault();
+            btn.classList.contains('prev') ? showPrev() : showNext();
+          }
+        });
+      });
+
+      show(0);
+    });
+  }
+
+  initGalleryCarousels();
+
+  // ----- Image lightbox -----
+  function initImageLightbox(){
+    const lightbox = document.getElementById('img-lightbox');
+    if (!lightbox) return;
+    const lbImg = lightbox.querySelector('img');
+    const closeBtn = lightbox.querySelector('.lightbox-close');
+    let lastFocus = null;
+
+    function open(src){
+      lastFocus = document.activeElement;
+      lbImg.src = src;
+      lightbox.classList.add('open');
+      closeBtn.focus();
+    }
+    function close(){
+      lightbox.classList.remove('open');
+      if (lastFocus) lastFocus.focus();
+    }
+
+    closeBtn.addEventListener('click', close);
+    lightbox.addEventListener('click', e => {
+      if (e.target === lightbox || e.target === lbImg) close();
+    });
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape' && lightbox.classList.contains('open')) close();
+    });
+
+    document.querySelectorAll('.gallery-img-wrap img, .gallery-carousel img').forEach(img => {
+      img.style.cursor = 'zoom-in';
+      img.setAttribute('tabindex', '0');
+      img.setAttribute('role', 'button');
+      img.setAttribute('data-i18n-attr', 'aria-label');
+      img.setAttribute('data-i18n', 'view_full_image');
+      img.setAttribute('aria-label', t('view_full_image'));
+      img.addEventListener('click', () => open(img.src));
+      img.addEventListener('keydown', e => {
+        if (e.key === 'Enter' || e.key === ' '){
+          e.preventDefault();
+          open(img.src);
+        }
+      });
+    });
+  }
+  initImageLightbox();
+
+  // Initial render after everything set up
+  applyLanguage(currentLang);
+
+})();
+</script>
+</body>
+</html>
